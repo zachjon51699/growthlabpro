@@ -27,44 +27,50 @@ function App() {
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Handle URL-based navigation on page load
-  React.useEffect(() => {
-    const handleRouting = () => {
-      const hash = window.location.hash.replace('#', '');
-      const path = window.location.pathname;
-      
-            // Check hash first (for compatibility)
-      if (hash === 'pricing') {
-        setCurrentPage('pricing');
-      } else if (hash === 'terms') {
-        setCurrentPage('terms');
-      } else if (hash === 'privacy') {
-        setCurrentPage('privacy');
-      }
-      // Then check pathname
-      else if (path === '/pricing') {
-        setCurrentPage('pricing');
-      } else if (path === '/terms') {
-        setCurrentPage('terms');
-      } else if (path === '/privacy') {
-        setCurrentPage('privacy');
-      } else {
-        setCurrentPage('home');
-      } else if (path === '/success') {
-        setCurrentPage('success');
-      }
-    };
+// Handle URL-based navigation on page load
+React.useEffect(() => {
+  const handleRouting = () => {
+    const hash = window.location.hash.replace('#', '');
+    const path = window.location.pathname;
 
-    handleRouting();
-    
-    // Listen for hash changes
-    const handleHashChange = () => handleRouting();
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+    // Check hash first (for compatibility)
+    if (hash === 'pricing') {
+      setCurrentPage('pricing');
+      return;
     }
-  }, []);
+    if (hash === 'terms') {
+      setCurrentPage('terms');
+      return;
+    }
+    if (hash === 'privacy') {
+      setCurrentPage('privacy');
+      return;
+    }
+    if (hash === 'success') {
+      setCurrentPage('success');
+      return;
+    }
+
+    // Then check pathname
+    if (path === '/pricing') {
+      setCurrentPage('pricing');
+    } else if (path === '/terms') {
+      setCurrentPage('terms');
+    } else if (path === '/privacy') {
+      setCurrentPage('privacy');
+    } else if (path === '/success') {
+      setCurrentPage('success');
+    } else {
+      setCurrentPage('home');
+    }
+  };
+
+  handleRouting();
+
+  const handleHashChange = () => handleRouting();
+  window.addEventListener('hashchange', handleHashChange);
+  return () => window.removeEventListener('hashchange', handleHashChange);
+}, []);
 
   // Update URL when page changes
   React.useEffect(() => {
