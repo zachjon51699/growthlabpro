@@ -22,7 +22,7 @@ import {
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'pricing' | 'terms' | 'privacy'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'pricing' | 'terms' | 'privacy'| 'success'>('home');
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -50,6 +50,8 @@ function App() {
         setCurrentPage('privacy');
       } else {
         setCurrentPage('home');
+      } else if (path === '/success') {
+        setCurrentPage('success');
       }
     };
 
@@ -169,8 +171,8 @@ function App() {
         body: JSON.stringify({
           line_items: lineItems,
           mode: checkoutMode,
-          success_url: `${window.location.origin}?success=true`,
-          cancel_url: `${window.location.origin}?canceled=true`,
+          success_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${window.location.origin}/pricing?canceled=true`,
         }),
       });
 
@@ -346,6 +348,33 @@ if (currentPage === 'pricing') {
   if (currentPage === 'privacy') {
     return <PrivacyPolicy onNavigateBack={() => setCurrentPage('home')} />;
   }
+  if (currentPage === 'success') {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+
+  return (
+    <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="max-w-lg w-full bg-white border border-gray-200 rounded-xl p-8 text-center">
+        <h1 className="text-3xl font-bold mb-4" style={{color: '#0A2540'}}>
+          Payment successful 🎉
+        </h1>
+        <p className="mb-6" style={{color: '#6B7280'}}>
+          Thanks! Your payment was processed.
+          {sessionId ? <> (Ref: <code>{sessionId}</code>)</> : null}
+        </p>
+        <button
+          className="text-white px-6 py-3 rounded-lg font-semibold"
+          style={{ backgroundColor: '#D4AF37' }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#B8860B')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#D4AF37')}
+          onClick={() => setCurrentPage('home')}
+        >
+          Back to Home
+        </button>
+      </div>
+    </div>
+  );
+}
 
 
   return (
