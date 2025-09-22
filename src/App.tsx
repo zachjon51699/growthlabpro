@@ -33,7 +33,7 @@ function App() {
       const hash = window.location.hash.replace('#', '');
       const path = window.location.pathname;
       
-      // Check hash first (for compatibility)
+            // Check hash first (for compatibility)
       if (hash === 'pricing') {
         setCurrentPage('pricing');
       } else if (hash === 'terms') {
