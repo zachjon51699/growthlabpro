@@ -757,6 +757,26 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
               <p className="text-sm" style={{color: '#64748B'}}>
                 © 2025 GrowthLabPro. All rights reserved.
               </p>
+              <div className="flex space-x-4 mt-2">
+                <button 
+                  onClick={() => setShowTerms(true)} 
+                  className="text-xs transition-colors" 
+                  style={{color: '#64748B'}}
+                  onMouseEnter={(e) => e.target.style.color = '#94A3B8'}
+                  onMouseLeave={(e) => e.target.style.color = '#64748B'}
+                >
+                  Terms of Service
+                </button>
+                <button 
+                  onClick={() => setShowPrivacy(true)} 
+                  className="text-xs transition-colors" 
+                  style={{color: '#64748B'}}
+                  onMouseEnter={(e) => e.target.style.color = '#94A3B8'}
+                  onMouseLeave={(e) => e.target.style.color = '#64748B'}
+                >
+                  Privacy Policy
+                </button>
+              </div>
             </div>
             
             <div>

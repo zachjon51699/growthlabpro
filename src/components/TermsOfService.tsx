@@ -103,7 +103,25 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                6. Client Responsibilities
+                6. Website & Marketing Assets Ownership
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Websites, booking systems, automations, and marketing tools provided under this agreement are built and hosted within GrowthLabPro's platform. These assets remain the property of GrowthLabPro for the duration of your subscription.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                If you remain an active subscriber for six (6) consecutive months, ownership of the website design (not including the proprietary automation systems, integrations, or software) may be transferred to you upon request.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                If you cancel before six (6) months, GrowthLabPro retains ownership and reserves the right to deactivate the website and related services.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                Domain names purchased by you remain your property at all times.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                7. Client Responsibilities
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Clients are responsible for:
@@ -116,7 +134,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                7. Limitation of Liability
+                8. Limitation of Liability
               </h2>
               <p style={{color: '#6B7280'}}>
                 GrowthLabPro shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, goodwill, or other intangible losses, resulting from your use of our services.
@@ -125,7 +143,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                8. Indemnification
+                9. Indemnification
               </h2>
               <p style={{color: '#6B7280'}}>
                 You agree to indemnify and hold harmless GrowthLabPro, its officers, employees, and affiliates, from any claims, liabilities, damages, losses, or expenses arising out of your use of the services or violation of these Terms.
@@ -134,7 +152,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                9. Privacy Policy
+                10. Privacy Policy
               </h2>
               <p style={{color: '#6B7280'}}>
                 Your use of our services is also governed by our{' '}
@@ -152,7 +170,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                10. Modifications to Terms
+                11. Modifications to Terms
               </h2>
               <p style={{color: '#6B7280'}}>
                 We reserve the right to modify these Terms at any time. We will provide notice of significant changes via email or through our services. Your continued use of our services after such modifications constitutes acceptance of the updated Terms.
@@ -161,7 +179,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                11. Governing Law & Dispute Resolution
+                12. Governing Law & Dispute Resolution
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 These Terms are governed by and construed in accordance with the laws of the State of Louisiana, without regard to its conflict of law principles. Any dispute, claim, or controversy arising out of or relating to these Terms or the services shall be resolved exclusively in the state or federal courts located in Baton Rouge, Louisiana. By using our services, you consent to the jurisdiction and venue of these courts.
@@ -173,7 +191,7 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                12. Contact Information
+                13. Contact Information
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 If you have any questions about these Terms of Service, please contact us:
