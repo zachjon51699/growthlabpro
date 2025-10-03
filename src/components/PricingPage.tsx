@@ -11,15 +11,9 @@ import {
   Crown, 
   Rocket,
   Shield,
-  Users,
-  TrendingUp,
   Globe,
-  Target,
   Home,
-  ShoppingCart,
-  Plus,
-  Minus,
-  Trash2
+  ShoppingCart
 } from 'lucide-react';
 
 interface CartItem {
