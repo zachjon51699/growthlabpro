@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { stripeProducts } from '../stripe-config';
+import TermsOfService from './TermsOfService';
+import PrivacyPolicy from './PrivacyPolicy';
 import { 
   Check, 
   X, 
@@ -616,6 +618,96 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
           </div>
         </div>
       </section>
+
+      {/* Shopping Cart Modal */}
+      {showCart && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-2xl font-bold" style={{ color: '#0A2540' }}>Shopping Cart</h2>
+              <button
+                onClick={() => setShowCart(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={24} style={{ color: '#6B7280' }} />
+              </button>
+            </div>
+
+            <div className="p-6">
+              {cart.length === 0 ? (
+                <div className="text-center py-8">
+                  <ShoppingCart size={48} className="mx-auto mb-4" style={{ color: '#D1D5DB' }} />
+                  <p className="text-lg mb-2" style={{ color: '#6B7280' }}>Your cart is empty</p>
+                  <p className="text-sm" style={{ color: '#9CA3AF' }}>Add a plan and any add-ons to get started</p>
+                  <button
+                    onClick={() => setShowCart(false)}
+                    className="mt-4 text-white px-6 py-2 rounded-lg transition-colors font-medium"
+                    style={{ backgroundColor: '#D4AF37' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#B8860B')}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#D4AF37')}
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-4 mb-6">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div className="flex-1">
+                          <h3 className="font-semibold" style={{ color: '#0A2540' }}>{item.name}</h3>
+                          <p className="text-sm" style={{ color: '#6B7280' }}>
+                            {item.type === 'plan' ? `${item.billingCycle} billing` : 'One-time purchase'}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <span className="font-semibold" style={{ color: '#D4AF37' }}>
+                            ${item.price.toLocaleString()}{item.type === 'plan' ? '/mo' : ''}
+                          </span>
+                          <button
+                            onClick={() => removeFromCart(item.id)}
+                            className="p-1 hover:bg-red-100 rounded transition-colors"
+                          >
+                            <X size={16} style={{ color: '#EF4444' }} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-lg font-semibold" style={{ color: '#0A2540' }}>Total:</span>
+                      <span className="text-2xl font-bold" style={{ color: '#D4AF37' }}>
+                        ${cart.reduce((total, item) => total + item.price, 0).toLocaleString()}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleCartCheckout}
+                      disabled={isLoading === 'cart-checkout'}
+                      className="w-full py-3 px-6 rounded-lg font-semibold transition-colors text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ backgroundColor: '#D4AF37' }}
+                      onMouseEnter={(e) => {
+                        if (!e.currentTarget.disabled) {
+                          e.currentTarget.style.backgroundColor = '#B8860B';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!e.currentTarget.disabled) {
+                          e.currentTarget.style.backgroundColor = '#D4AF37';
+                        }
+                      }}
+                    >
+                      {isLoading === 'cart-checkout' ? 'Processing...' : 'Proceed to Checkout'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {showTerms && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
