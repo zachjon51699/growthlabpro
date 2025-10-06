@@ -259,28 +259,32 @@ React.useEffect(() => {
     }
   };
 
-  // Contact form submission handler
+  // Contact form submission handler using Netlify Forms
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingContact(true);
     setContactMessage('');
 
     try {
-      const response = await fetch('/.netlify/functions/contact-form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactForm),
-      });
+      // Use Netlify Forms - no custom function needed
+      const formData = new FormData();
+      formData.append('form-name', 'contact');
+      formData.append('name', contactForm.name);
+      formData.append('email', contactForm.email);
+      formData.append('company', contactForm.company);
+      formData.append('message', contactForm.message);
 
-      const result = await response.json();
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
+      });
 
       if (response.ok) {
         setContactMessage('Message sent successfully! We\'ll get back to you soon.');
         setContactForm({ name: '', email: '', company: '', message: '' });
       } else {
-        setContactMessage(result.error || 'Failed to send message. Please try again.');
+        setContactMessage('Failed to send message. Please try again.');
       }
     } catch (error) {
       console.error('Contact form error:', error);
@@ -1065,7 +1069,8 @@ if (currentPage === 'pricing') {
             </div>
 
             <div>
-              <form onSubmit={handleContactSubmit} className="space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-6" data-netlify="true" name="contact">
+                <input type="hidden" name="form-name" value="contact" />
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-1" style={{color: '#374151'}}>
                     Name *
