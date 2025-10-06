@@ -10,25 +10,3 @@
 # Netlify Forms configuration
 [build.environment]
   NODE_VERSION = "18"
-
-# Form notifications - send emails to contact@growthlabpro.com
-[[forms]]
-  name = "contact"
-  action = "/"
-  method = "POST"
-  
-# Email notifications for form submissions
-[forms.notifications]
-  email = "contact@growthlabpro.com"
-  subject = "New Contact Form Submission from {{name}}"
-  body = """
-  New contact form submission:
-  
-  Name: {{name}}
-  Email: {{email}}
-  Company: {{company}}
-  Message: {{message}}
-  
-  ---
-  This message was sent from the GrowthLabPro website contact form.
-  """

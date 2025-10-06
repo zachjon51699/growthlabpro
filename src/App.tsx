@@ -266,24 +266,36 @@ React.useEffect(() => {
     setContactMessage('');
 
     try {
-      // Use Netlify Forms - no custom function needed
-      const formData = new FormData();
+      // Check if we're in development or production
+      const isDevelopment = window.location.hostname === 'localhost';
+      
+      if (isDevelopment) {
+        // For local development, simulate success
+        console.log('Development mode - form submission simulated:', contactForm);
+        setContactMessage('Message sent successfully! (Development mode - will work when deployed)');
+        setContactForm({ name: '', email: '', company: '', message: '' });
+        return;
+      }
+
+      // For production (Netlify), use Netlify Forms
+      const formData = new URLSearchParams();
       formData.append('form-name', 'contact');
       formData.append('name', contactForm.name);
       formData.append('email', contactForm.email);
-      formData.append('company', contactForm.company);
+      formData.append('company', contactForm.company || '');
       formData.append('message', contactForm.message);
 
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
+        body: formData.toString(),
       });
 
       if (response.ok) {
         setContactMessage('Message sent successfully! We\'ll get back to you soon.');
         setContactForm({ name: '', email: '', company: '', message: '' });
       } else {
+        console.error('Form submission failed:', response.status, response.statusText);
         setContactMessage('Failed to send message. Please try again.');
       }
     } catch (error) {
