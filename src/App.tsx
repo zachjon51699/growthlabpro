@@ -270,14 +270,14 @@ React.useEffect(() => {
       const isDevelopment = window.location.hostname === 'localhost';
       
       if (isDevelopment) {
-        // For local development, simulate success
+        // For local development, simulate success immediately
         console.log('Development mode - form submission simulated:', contactForm);
         setContactMessage('Message sent successfully! (Development mode - will work when deployed)');
         setContactForm({ name: '', email: '', company: '', message: '' });
         return;
       }
 
-      // For production (Netlify), use Netlify Forms
+      // For production (Netlify), use Netlify Forms with timeout
       const formData = new URLSearchParams();
       formData.append('form-name', 'contact');
       formData.append('name', contactForm.name);
@@ -285,11 +285,18 @@ React.useEffect(() => {
       formData.append('company', contactForm.company || '');
       formData.append('message', contactForm.message);
 
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString(),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         setContactMessage('Message sent successfully! We\'ll get back to you soon.');
@@ -1162,12 +1169,22 @@ if (currentPage === 'pricing') {
                 <button
                   type="submit"
                   disabled={isSubmittingContact}
-                  className="w-full text-white py-3 px-6 rounded-lg transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full text-white py-3 px-6 rounded-lg transition-all duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
                   style={{backgroundColor: '#D4AF37'}}
                   onMouseEnter={(e) => !isSubmittingContact && (e.target.style.backgroundColor = '#B8860B')}
                   onMouseLeave={(e) => !isSubmittingContact && (e.target.style.backgroundColor = '#D4AF37')}
                 >
-                  {isSubmittingContact ? 'Sending...' : 'Send Message'}
+                  {isSubmittingContact ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : (
+                    'Send Message'
+                  )}
                 </button>
               </form>
             </div>
