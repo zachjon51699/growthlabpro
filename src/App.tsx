@@ -26,6 +26,16 @@ function App() {
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
+  
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    company: '',
+    message: ''
+  });
+  const [isSubmittingContact, setIsSubmittingContact] = useState(false);
+  const [contactMessage, setContactMessage] = useState('');
 
 // Handle URL-based navigation on page load
 React.useEffect(() => {
@@ -247,6 +257,46 @@ React.useEffect(() => {
       console.error('Cart checkout error:', error);
       alert(`Checkout error: ${error.message}. Please try again or contact support.`);
     }
+  };
+
+  // Contact form submission handler
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingContact(true);
+    setContactMessage('');
+
+    try {
+      const response = await fetch('/.netlify/functions/contact-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setContactMessage('Message sent successfully! We\'ll get back to you soon.');
+        setContactForm({ name: '', email: '', company: '', message: '' });
+      } else {
+        setContactMessage(result.error || 'Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      setContactMessage('Failed to send message. Please try again.');
+    } finally {
+      setIsSubmittingContact(false);
+    }
+  };
+
+  // Handle contact form input changes
+  const handleContactInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
 if (currentPage === 'pricing') {
@@ -1015,14 +1065,18 @@ if (currentPage === 'pricing') {
             </div>
 
             <div>
-              <form className="space-y-6">
+              <form onSubmit={handleContactSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-1" style={{color: '#374151'}}>
-                    Name
+                    Name *
                   </label>
                   <input
                     type="text"
                     id="name"
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleContactInputChange}
+                    required
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent"
                     style={{borderColor: '#D1D5DB', '--tw-ring-color': '#D4AF37'}}
                     placeholder="Your Name"
@@ -1030,11 +1084,15 @@ if (currentPage === 'pricing') {
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium mb-1" style={{color: '#374151'}}>
-                    Email
+                    Email *
                   </label>
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    value={contactForm.email}
+                    onChange={handleContactInputChange}
+                    required
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent"
                     style={{borderColor: '#D1D5DB', '--tw-ring-color': '#D4AF37'}}
                     placeholder="your@email.com"
@@ -1047,6 +1105,9 @@ if (currentPage === 'pricing') {
                   <input
                     type="text"
                     id="company"
+                    name="company"
+                    value={contactForm.company}
+                    onChange={handleContactInputChange}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent"
                     style={{borderColor: '#D1D5DB', '--tw-ring-color': '#D4AF37'}}
                     placeholder="Your Company Name"
@@ -1054,24 +1115,38 @@ if (currentPage === 'pricing') {
                 </div>
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium mb-1" style={{color: '#374151'}}>
-                    Message
+                    Message *
                   </label>
                   <textarea
                     id="message"
+                    name="message"
+                    value={contactForm.message}
+                    onChange={handleContactInputChange}
+                    required
                     rows={4}
                     className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent"
                     style={{borderColor: '#D1D5DB', '--tw-ring-color': '#D4AF37'}}
                     placeholder="Tell us about your marketing goals..."
                   ></textarea>
                 </div>
+                {contactMessage && (
+                  <div className={`p-3 rounded-lg text-sm ${
+                    contactMessage.includes('successfully') 
+                      ? 'bg-green-100 text-green-700' 
+                      : 'bg-red-100 text-red-700'
+                  }`}>
+                    {contactMessage}
+                  </div>
+                )}
                 <button
                   type="submit"
-                  className="w-full text-white py-3 px-6 rounded-lg transition-colors font-semibold"
+                  disabled={isSubmittingContact}
+                  className="w-full text-white py-3 px-6 rounded-lg transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{backgroundColor: '#D4AF37'}}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
+                  onMouseEnter={(e) => !isSubmittingContact && (e.target.style.backgroundColor = '#B8860B')}
+                  onMouseLeave={(e) => !isSubmittingContact && (e.target.style.backgroundColor = '#D4AF37')}
                 >
-                  Send Message
+                  {isSubmittingContact ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </div>
