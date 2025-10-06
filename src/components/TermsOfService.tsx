@@ -330,4 +330,3 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 };
 
 export default TermsOfService;
-export default TermsOfService;
