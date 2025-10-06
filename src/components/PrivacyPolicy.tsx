@@ -37,178 +37,193 @@ const PrivacyPolicy = ({ onNavigateBack }: PrivacyPolicyProps) => {
           
           <div className="prose prose-lg max-w-none">
             <p className="text-lg mb-6" style={{color: '#6B7280'}}>
-              Last updated: January 2025
+              Last Updated: October 2025
             </p>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                1. Information We Collect
+                GrowthLabPro Privacy Policy
               </h2>
-              <p style={{color: '#6B7280'}}>
-                We collect information you provide directly to us, such as when you create an account, subscribe to our services, or contact us for support. This may include:
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                This Privacy Policy describes how GrowthLabPro LLC ("GrowthLabPro," "we," "us," or "our") collects, uses, and protects your information when you visit our website, respond to our advertisements, or use our services.
               </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Name, email address, and phone number</li>
-                <li>Business information and company details</li>
-                <li>Payment and billing information</li>
-                <li>Communications with our support team</li>
-                <li>Website usage data and analytics</li>
-                <li>Marketing preferences and interests</li>
+              <p style={{color: '#6B7280'}}>
+                By using our services, you agree to this Privacy Policy and the collection and use of information as described herein.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Mobile Communication Policy
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                We value your privacy and are committed to protecting your personal information.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                By providing your mobile number, you consent to receive SMS messages related to account notifications, onboarding, support, and promotional offers.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                <strong>No Third-Party Sharing:</strong> Your mobile number and opt-in information will not be shared or sold to third parties for marketing purposes.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                <strong>Opt-Out Instructions:</strong> You may opt out of receiving SMS messages at any time by replying STOP to any message you receive.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                <strong>Support:</strong> For assistance, reply HELP to any of our messages or contact us at contact@growthlabpro.com.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Interpretation and Definitions
+              </h2>
+              <h3 className="text-xl font-semibold mb-3" style={{color: '#0A2540'}}>
+                Interpretation
+              </h3>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Capitalized words have the meanings defined below. The same meaning applies whether they appear in singular or plural form.
+              </p>
+              <h3 className="text-xl font-semibold mb-3" style={{color: '#0A2540'}}>
+                Definitions
+              </h3>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                For the purposes of this Privacy Policy:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li><strong>Company</strong> (referred to as "the Company," "we," "us," or "our") means GrowthLabPro LLC, headquartered in Baton Rouge, Louisiana.</li>
+                <li><strong>Device</strong> means any device that can access the service, such as a computer, smartphone, or tablet.</li>
+                <li><strong>Personal Data</strong> means any information that identifies or could reasonably identify an individual.</li>
+                <li><strong>Service</strong> refers to GrowthLabPro's marketing systems, websites, automations, advertisements, and related platforms.</li>
               </ul>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                2. How We Use Your Information
+                Collecting and Using Your Personal Data
               </h2>
-              <p style={{color: '#6B7280'}}>
-                We use the information we collect to:
+              <h3 className="text-xl font-semibold mb-3" style={{color: '#0A2540'}}>
+                Types of Data Collected
+              </h3>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                While using our services, we may collect the following information:
               </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Provide, maintain, and improve our services</li>
-                <li>Process transactions and send related information</li>
-                <li>Send technical notices and support messages</li>
-                <li>Communicate about products, services, and promotional offers</li>
-                <li>Monitor and analyze usage patterns and trends</li>
-                <li>Personalize your experience with our services</li>
-                <li>Comply with legal obligations</li>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>First and last name</li>
+                <li>Email address</li>
+                <li>Phone number</li>
+                <li>Business name and details</li>
+                <li>Location information (city, state, or region)</li>
+                <li>Communications or inquiries sent to us</li>
+                <li>Technical data such as browser type, device ID, or IP address</li>
+              </ul>
+              <h3 className="text-xl font-semibold mb-3" style={{color: '#0A2540'}}>
+                How We Use Your Personal Data
+              </h3>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                GrowthLabPro may use your information for the following purposes:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>To provide, maintain, and improve our services</li>
+                <li>To contact you by email, SMS, or phone for support, updates, and promotional communications</li>
+                <li>To manage and respond to your requests or inquiries</li>
+                <li>To analyze service performance and improve user experience</li>
+                <li>To comply with legal and regulatory obligations</li>
+                <li>To prevent, detect, or investigate fraud, abuse, or security incidents</li>
               </ul>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                3. Information Sharing and Disclosure
+                Data Sharing and Disclosure
               </h2>
-              <p style={{color: '#6B7280'}}>
-                We do not sell, trade, or otherwise transfer your personal information to third parties except in the following circumstances:
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                GrowthLabPro does not sell or rent your personal information.
               </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li><strong>Service Providers:</strong> We may share information with trusted third-party service providers who assist us in operating our business</li>
-                <li><strong>Legal Requirements:</strong> We may disclose information when required by law or to protect our rights and safety</li>
-                <li><strong>Business Transfers:</strong> Information may be transferred in connection with a merger, acquisition, or sale of assets</li>
-                <li><strong>Consent:</strong> We may share information with your explicit consent</li>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                We may share limited information in the following cases:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li><strong>Service Providers:</strong> With trusted third-party vendors (e.g., payment processors like Stripe, analytics tools like Google Analytics) who assist in operating our business.</li>
+                <li><strong>Legal Requirements:</strong> When required by law or to protect our rights, users, or property.</li>
+                <li><strong>Business Transfers:</strong> In connection with a merger, sale, or reorganization of GrowthLabPro.</li>
               </ul>
+              <p style={{color: '#6B7280'}}>
+                All third parties are bound by confidentiality and data protection obligations consistent with this policy.
+              </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                4. Data Security
+                Security of Your Personal Data
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                We use commercially reasonable safeguards to protect your data from unauthorized access, alteration, or disclosure.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                However, no online system is 100% secure. While we strive to use industry-standard measures, we cannot guarantee absolute security.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Cookies and Tracking Technologies
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                We may use cookies and similar technologies to enhance your browsing experience, remember preferences, and analyze traffic.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                You can disable cookies in your browser settings, but some parts of the service may not function properly as a result.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Data Retention
               </h2>
               <p style={{color: '#6B7280'}}>
-                We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. These measures include:
+                We retain your personal data only as long as necessary to fulfill the purposes outlined in this policy, comply with our legal obligations, and enforce our agreements.
               </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Encryption of sensitive data in transit and at rest</li>
-                <li>Regular security assessments and updates</li>
-                <li>Access controls and authentication procedures</li>
-                <li>Employee training on data protection practices</li>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Your Rights
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Depending on your location, you may have the right to:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>Access or request a copy of your personal data</li>
+                <li>Request correction or deletion of your data</li>
+                <li>Object to or restrict certain processing</li>
+                <li>Opt out of marketing communications</li>
               </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                5. Cookies and Tracking Technologies
-              </h2>
               <p style={{color: '#6B7280'}}>
-                We use cookies and similar technologies to collect information about your browsing activities. This helps us:
-              </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Remember your preferences and settings</li>
-                <li>Analyze website traffic and usage patterns</li>
-                <li>Provide personalized content and advertisements</li>
-                <li>Improve website functionality and user experience</li>
-              </ul>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                You can control cookie settings through your browser preferences. Where required by law, we will ask for your consent before placing certain cookies. Please note some features may not function properly if cookies are disabled.
+                To exercise these rights, contact us at contact@growthlabpro.com.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                6. Your Rights and Choices
+                Changes to This Privacy Policy
               </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                We may update this Privacy Policy periodically.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                When changes are made, we will update the "Last Updated" date at the top of this page.
+              </p>
               <p style={{color: '#6B7280'}}>
-                You have the following rights regarding your personal information:
-              </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li><strong>Access:</strong> Request access to your personal information</li>
-                <li><strong>Correction:</strong> Request correction of inaccurate information</li>
-                <li><strong>Deletion:</strong> Request deletion of your personal information</li>
-                <li><strong>Portability:</strong> Request a copy of your data in a portable format</li>
-                <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
-                <li><strong>Restriction:</strong> Request restriction of processing in certain circumstances</li>
-              </ul>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                To exercise these rights, please contact us at contact@growthlabpro.com. We may request verification of your identity before fulfilling your request.
-              </p>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                Residents of the European Economic Area (EEA), the United Kingdom, and California may have additional rights under applicable privacy laws, which we will honor as required.
+                Your continued use of our services after changes are posted constitutes acceptance of the revised policy.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                7. Data Retention
+                Contact Us
               </h2>
               <p style={{color: '#6B7280'}}>
-                We retain your personal information for as long as necessary to provide our services and fulfill the purposes outlined in this policy. For example, we retain billing information for at least seven (7) years to comply with tax and accounting obligations.
-              </p>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                We may also retain certain information as required by law, to resolve disputes, or to enforce our agreements.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                8. International Data Transfers
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                If you access our services from outside the United States, please note that your information may be transferred to and processed in countries where data protection laws may differ from those of your jurisdiction. We take steps to ensure that appropriate safeguards are in place to protect your information.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                9. Third-Party Services
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                Our services may integrate with third-party platforms and services, including:
-              </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Payment processors (e.g., Stripe)</li>
-                <li>Analytics services (e.g., Google Analytics)</li>
-                <li>Marketing platforms</li>
-                <li>Customer support tools</li>
-              </ul>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                These third parties have their own privacy policies, and we encourage you to review them.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                10. Children's Privacy
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                Our services are not intended for children under 13 years of age (or 16 where required by law). We do not knowingly collect personal information from children. If we become aware that we have collected such information, we will take steps to delete it.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                11. Changes to This Privacy Policy
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website and updating the "Last updated" date. Your continued use of our services after such changes constitutes acceptance of the updated policy.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                12. Contact Us
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                If you have questions about this Privacy Policy or our data practices, please contact us:
               </p>
               <div className="mt-4" style={{color: '#6B7280'}}>
                 <p>Email: contact@growthlabpro.com</p>

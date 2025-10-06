@@ -43,119 +43,31 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                1. Agreement to Terms
+                GrowthLabPro Terms & Conditions
               </h2>
               <p style={{color: '#6B7280'}}>
-                By accessing and using GrowthLabPro's services, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree, you may not use our services.
+                These Terms and Conditions apply to all services, automations, and SMS messages sent or received as part of GrowthLabPro's contractor marketing platform. Your use of this service constitutes acceptance of these terms.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                2. Services Description
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                GrowthLabPro provides website design, marketing systems, and lead generation services specifically for contractors. Our services include but are not limited to:
-              </p>
-              <ul className="list-disc pl-6 mt-4" style={{color: '#6B7280'}}>
-                <li>Professional website design and development</li>
-                <li>Marketing automation systems</li>
-                <li>Lead generation and management</li>
-                <li>Search engine optimization (SEO)</li>
-                <li>Social media marketing</li>
-                <li>Review management systems</li>
-              </ul>
-              <p className="mt-4" style={{color: '#6B7280'}}>
-                We may update, modify, or discontinue any service features at our discretion.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                3. Payment Terms
-              </h2>
-              <ul className="list-disc pl-6" style={{color: '#6B7280'}}>
-                <li>Payment for services is due according to the billing cycle selected (monthly or annual).</li>
-                <li>All fees are non-refundable except as expressly stated in these Terms.</li>
-                <li>We reserve the right to change our pricing with 30 days' written notice.</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                4. Cancellation Policy
-              </h2>
-              <ul className="list-disc pl-6" style={{color: '#6B7280'}}>
-                <li>You may cancel your subscription at any time with 30 days' written notice.</li>
-                <li>Upon cancellation, you will continue to have access to services until the end of your current billing period.</li>
-                <li>No refunds will be provided for partial months of service.</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                5. Intellectual Property
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                All content, features, and functionality of our services are owned by GrowthLabPro and are protected by copyright, trademark, and other intellectual property laws. You are granted a limited, non-transferable license to use our services for your business purposes only.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                6. Website & Marketing Assets Ownership
+                SMS Disclosure
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Websites, booking systems, automations, and marketing tools provided under this agreement are built and hosted within GrowthLabPro's platform. These assets remain the property of GrowthLabPro for the duration of your subscription.
+                By opting in to GrowthLabPro's SMS services, you agree to receive text messages related to notifications, account updates, marketing offers, and other service-related communications.
               </p>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                If you remain an active subscriber for six (6) consecutive months, ownership of the website design (not including the proprietary automation systems, integrations, or software) may be transferred to you upon request.
+                Message frequency may vary depending on your usage.
               </p>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                If you cancel before six (6) months, GrowthLabPro retains ownership and reserves the right to deactivate the website and related services.
+                Standard message & data rates apply according to your mobile carrier's terms.
               </p>
-              <p style={{color: '#6B7280'}}>
-                Domain names purchased by you remain your property at all times.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                7. Client Responsibilities
-              </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Clients are responsible for:
+                To opt out of SMS communications at any time, reply STOP to any message you receive. For assistance, reply HELP or contact us directly at contact@growthlabpro.com.
               </p>
-              <ul className="list-disc pl-6" style={{color: '#6B7280'}}>
-                <li>Providing accurate information, timely feedback, and necessary access to implement services.</li>
-                <li>Complying with all applicable laws and regulations in their use of our services.</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                8. Limitation of Liability
-              </h2>
               <p style={{color: '#6B7280'}}>
-                GrowthLabPro shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, goodwill, or other intangible losses, resulting from your use of our services.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                9. Indemnification
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                You agree to indemnify and hold harmless GrowthLabPro, its officers, employees, and affiliates, from any claims, liabilities, damages, losses, or expenses arising out of your use of the services or violation of these Terms.
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                10. Privacy Policy
-              </h2>
-              <p style={{color: '#6B7280'}}>
-                Your use of our services is also governed by our{' '}
+                For more information on data handling, please refer to our{' '}
                 <button 
                   onClick={onNavigateToPrivacy}
                   className="font-medium transition-colors underline"
@@ -170,37 +82,245 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                11. Modifications to Terms
+                Messaging Consent
               </h2>
               <p style={{color: '#6B7280'}}>
-                We reserve the right to modify these Terms at any time. We will provide notice of significant changes via email or through our services. Your continued use of our services after such modifications constitutes acceptance of the updated Terms.
+                By using our platform, you explicitly consent to receive communications from GrowthLabPro. Consent can be granted through website opt-ins, forms, live interactions, or verbal agreements during customer onboarding.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                12. Governing Law & Dispute Resolution
+                Message Types and Frequency
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                These Terms are governed by and construed in accordance with the laws of the State of Louisiana, without regard to its conflict of law principles. Any dispute, claim, or controversy arising out of or relating to these Terms or the services shall be resolved exclusively in the state or federal courts located in Baton Rouge, Louisiana. By using our services, you consent to the jurisdiction and venue of these courts.
+                Messages sent by GrowthLabPro may include service alerts, updates, reminders, promotional offers, and account notifications.
               </p>
               <p style={{color: '#6B7280'}}>
-                Where permitted by law, any disputes shall first be attempted to be resolved through informal negotiations, and if unresolved, through binding arbitration in Baton Rouge, Louisiana.
+                Message frequency will vary based on your activity and engagement with the platform.
               </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
-                13. Contact Information
+                Data Rates and Charges
+              </h2>
+              <p style={{color: '#6B7280'}}>
+                Standard message and data rates apply to all texts sent or received. Charges depend on your mobile carrier's plan and are not the responsibility of GrowthLabPro.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Opt-Out Instructions
               </h2>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                If you have any questions about these Terms of Service, please contact us:
+                You may opt out of receiving text messages at any time by replying STOP to any message.
               </p>
-              <div className="mt-4" style={{color: '#6B7280'}}>
-                <p>Email: contact@growthlabpro.com</p>
-                <p>Phone: (225) 454-5977</p>
-                <p>Address: Baton Rouge, LA</p>
-              </div>
+              <p style={{color: '#6B7280'}}>
+                Opting out removes you from all SMS communications, including important service updates.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Message Delivery
+              </h2>
+              <p style={{color: '#6B7280'}}>
+                GrowthLabPro does not guarantee that SMS or email messages will be delivered without delay or failure. Message issues may arise from carrier outages, network errors, or device compatibility issues.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                User Obligations
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                By using our platform, you agree to:
+              </p>
+              <ul className="list-disc pl-6" style={{color: '#6B7280'}}>
+                <li>Abide by all applicable laws and communication regulations.</li>
+                <li>Use the system responsibly and avoid sending messages that are unlawful, harassing, or misleading.</li>
+                <li>Obtain consent from your own contacts before sending messages through GrowthLabPro automations.</li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Compliance with Laws
+              </h2>
+              <p style={{color: '#6B7280'}}>
+                You acknowledge that all communications must comply with the Telephone Consumer Protection Act (TCPA), CAN-SPAM Act, and any other relevant federal or state regulations. GrowthLabPro is not responsible for violations arising from your misuse of the platform.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Subscription Plans and Billing
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                GrowthLabPro offers two primary subscription plans:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li><strong>$297/month:</strong> Includes a fully built website (up to 20 pages), access to the GrowthLabPro platform, CRM, automations, missed call text back, automated Google review system, and marketing campaign templates.</li>
+                <li><strong>$750/month:</strong> Includes all features from the $297 plan, plus full management and optimization of Google Local Service Ads.</li>
+              </ul>
+              <p style={{color: '#6B7280'}}>
+                Subscriptions are available on a month-to-month basis or as a prepaid 3-month term, which includes a complimentary Google Business Profile optimization (valued at $400).
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Advance Payment & Auto-Renewal
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                All subscriptions are billed in advance and automatically renewed until canceled.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                Payment is securely processed via Stripe using a valid credit or debit card.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Usage-Based Charges (Rebillable Costs)
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Certain services may incur additional usage-based costs, including phone number fees, SMS/MMS messaging, or call usage. Current rates are:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>Local Numbers: $1.15/month</li>
+                <li>Toll-Free Numbers: $2.15/month</li>
+                <li>SMS (US/Canada): $0.0079/segment (inbound/outbound)</li>
+                <li>MMS (US/Canada): $0.02 outbound | $0.01–$0.02 inbound</li>
+                <li>Voice Calls: $0.0180/min outbound | $0.0085–$0.0220/min inbound</li>
+              </ul>
+              <p style={{color: '#6B7280'}}>
+                These fees are automatically billed as part of your subscription.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Wallet Balance and Auto Top-Up
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Clients maintain a digital wallet balance to cover usage-based charges.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                When your wallet reaches a low balance, it will automatically top up based on your preferred settings.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                No Refund Policy
+              </h2>
+              <p style={{color: '#6B7280'}}>
+                All payments made to GrowthLabPro are final and non-refundable, including subscription fees and usage charges. Because services begin immediately and are custom-configured, they cannot be reversed once initiated.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Chargebacks Are Not Permitted
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                By subscribing, you agree not to initiate chargebacks for services rendered.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                Fraudulent chargebacks will result in account termination, and GrowthLabPro reserves the right to pursue recovery for outstanding balances and legal costs.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Cancellation Terms
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                You may cancel your subscription at any time. Cancellation becomes effective on your next billing cycle, and no future charges will be made beyond that date. Early cancellation does not entitle you to a refund for the unused portion of a prepaid term.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Upon cancellation:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>Access to your website, automations, CRM, and platform features will be suspended.</li>
+                <li>All systems, assets, and automations remain the property of GrowthLabPro.</li>
+                <li>Domain names purchased directly by you remain your property.</li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Delivery of Services
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Services are considered rendered and fulfilled once:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>Your website has been completed and delivered.</li>
+                <li>Your CRM, automations, and platform setup are finalized.</li>
+              </ul>
+              <p style={{color: '#6B7280'}}>
+                Support or onboarding assistance may be provided but is not a prerequisite for fulfillment.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Free Trials and Promotions
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                GrowthLabPro may occasionally offer free trials or discounts. During any trial period, setup may be limited.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Full service delivery occurs once billing begins.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                Discounted promotions do not alter these Terms and Conditions.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Payment Failures and Service Suspension
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                If a payment fails, we will attempt up to four (4) retries over three weeks.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                If unpaid after 48 hours from the first failed attempt, your account and access will be suspended until the balance is paid in full.
+              </p>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Consent and Agreement
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                By subscribing to GrowthLabPro or checking the agreement box at checkout, you confirm that:
+              </p>
+              <ul className="list-disc pl-6 mb-4" style={{color: '#6B7280'}}>
+                <li>You have read, understood, and agree to these Terms & Conditions.</li>
+                <li>You accept our No Refund Policy.</li>
+                <li>You waive the right to initiate chargebacks for services rendered.</li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>
+                Changes to Terms and Conditions
+              </h2>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                GrowthLabPro reserves the right to update these Terms and Conditions at any time.
+              </p>
+              <p className="mb-4" style={{color: '#6B7280'}}>
+                Changes will be communicated through our website or direct notice to clients.
+              </p>
+              <p style={{color: '#6B7280'}}>
+                Continued use of our services constitutes acceptance of the revised Terms.
+              </p>
             </section>
           </div>
         </div>
@@ -209,4 +329,5 @@ const TermsOfService = ({ onNavigateBack, onNavigateToPrivacy }: TermsOfServiceP
   );
 };
 
+export default TermsOfService;
 export default TermsOfService;
