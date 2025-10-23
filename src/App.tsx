@@ -503,6 +503,30 @@ if (currentPage === 'pricing') {
               </div>
               
               <button 
+                className="border-2 px-6 py-2 rounded-lg transition-colors font-medium mr-4"
+                style={{borderColor: '#D4AF37', color: '#D4AF37'}}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#D4AF37';
+                  e.target.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = '#D4AF37';
+                }}
+                onClick={() => {
+                  const loginUrl = 'https://app.growthlabpro.com';
+                  try {
+                    window.open(loginUrl, '_blank');
+                  } catch (error) {
+                    console.error('Error opening login:', error);
+                    // Fallback: try to navigate in same window
+                    window.location.href = loginUrl;
+                  }
+                }}
+              >
+                Login
+              </button>
+              <button 
                 className="text-white px-6 py-2 rounded-lg transition-colors font-medium"
                 style={{backgroundColor: '#D4AF37'}}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
@@ -536,6 +560,30 @@ if (currentPage === 'pricing') {
                 <a href="#about" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>About</a>
                 <a href="#testimonials" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Reviews</a>
                 <a href="#contact" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Contact</a>
+                <button 
+                  className="w-full text-left px-3 py-2 border-2 rounded-lg transition-colors mb-2"
+                  style={{borderColor: '#D4AF37', color: '#D4AF37'}}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#D4AF37';
+                    e.target.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'transparent';
+                    e.target.style.color = '#D4AF37';
+                  }}
+                  onClick={() => {
+                    const loginUrl = 'https://app.growthlabpro.com';
+                    try {
+                      window.open(loginUrl, '_blank');
+                    } catch (error) {
+                      console.error('Error opening login:', error);
+                      // Fallback: try to navigate in same window
+                      window.location.href = loginUrl;
+                    }
+                  }}
+                >
+                  Login
+                </button>
                 <button 
                   className="w-full text-left px-3 py-2 text-white rounded-lg transition-colors"
                   style={{backgroundColor: '#D4AF37'}}
