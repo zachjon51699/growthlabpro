@@ -541,7 +541,7 @@ if (currentPage === 'pricing') {
       {/* Header */}
       <header className="fixed w-full top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+          <div className="flex justify-between items-center h-16 sm:h-20">
             {/* Logo */}
             <div className="flex items-center">
               <Logo onClick={() => setCurrentPage('home')} size="md" />
@@ -854,20 +854,20 @@ if (currentPage === 'pricing') {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
+      <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight" style={{color: '#0A2540'}}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight px-4" style={{color: '#0A2540'}}>
               Marketing That Actually Works<br />
               <span style={{color: '#D4AF37'}}>Built Specifically for Contractors</span>
             </h1>
-            <p className="text-xl mb-8 max-w-3xl mx-auto" style={{color: '#6B7280'}}>
+            <p className="text-base sm:text-lg md:text-xl mb-8 max-w-3xl mx-auto px-4" style={{color: '#6B7280'}}>
               Stop wasting money on marketing that doesn't convert. We build contractor-focused websites 
               and automated systems that turn browsers into booked jobs and phone calls into closed deals.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <button 
-                className="text-white px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-lg font-semibold flex items-center justify-center"
+                className="text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-base sm:text-lg font-semibold flex items-center justify-center min-h-[48px]"
                 style={{backgroundColor: '#D4AF37'}}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
@@ -880,7 +880,7 @@ if (currentPage === 'pricing') {
                 <ArrowRight className="ml-2" size={20} style={{color: '#FDE68A'}} />
               </button>
               <button 
-                className="border-2 px-8 py-4 rounded-lg transition-colors text-lg font-semibold"
+                className="border-2 px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-colors text-base sm:text-lg font-semibold min-h-[48px]"
                 style={{borderColor: '#D1D5DB', color: '#0A2540'}}
                 onClick={() => setCurrentPage('portfolio')}
                 onMouseEnter={(e) => {
@@ -1009,42 +1009,42 @@ if (currentPage === 'pricing') {
       )}
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div className="p-6">
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>500+</div>
-              <div style={{color: '#6B7280'}}>Contractors Served</div>
+              <div className="text-3xl sm:text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>500+</div>
+              <div className="text-sm sm:text-base" style={{color: '#6B7280'}}>Contractors Served</div>
             </div>
             <div className="p-6">
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>2.5x</div>
-              <div style={{color: '#6B7280'}}>Average Lead Increase</div>
+              <div className="text-3xl sm:text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>2.5x</div>
+              <div className="text-sm sm:text-base" style={{color: '#6B7280'}}>Average Lead Increase</div>
             </div>
             <div className="p-6">
-              <div className="text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>98%</div>
-              <div style={{color: '#6B7280'}}>Client Satisfaction</div>
+              <div className="text-3xl sm:text-4xl font-bold mb-2" style={{color: '#D4AF37'}}>98%</div>
+              <div className="text-sm sm:text-base" style={{color: '#6B7280'}}>Client Satisfaction</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20" style={{backgroundColor: '#F9FAFB'}}>
+      <section id="services" className="py-12 sm:py-16 md:py-20" style={{backgroundColor: '#F9FAFB'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4" style={{color: '#0A2540'}}>
               Everything Your Contractor Business Needs to Grow
             </h2>
-            <p className="text-xl max-w-3xl mx-auto" style={{color: '#6B7280'}}>
+            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4" style={{color: '#6B7280'}}>
               Professional websites, lead capture systems, review automation, and marketing campaigns 
               designed specifically for tradespeople. Stop struggling with DIY solutions and start scaling.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Globe className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Professional Websites</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Globe className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>Professional Websites</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Contractor websites built for results, not just looks. Lightning-fast loading, 
                 search engine optimized, and strategically designed to turn visitors into leads.
@@ -1065,9 +1065,9 @@ if (currentPage === 'pricing') {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Phone className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Missed Call Text Back</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Phone className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>Missed Call Text Back</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Instantly text every caller you miss, turning unanswered rings into active conversations. 
                 No more lost leads—every call gets a follow-up, even when you're on another job.
@@ -1088,9 +1088,9 @@ if (currentPage === 'pricing') {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Star className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Automated Review Generator</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Star className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>Automated Review Generator</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Systematically gather 5-star reviews from happy customers without lifting a finger. 
                 Build a reputation that brings in new business while you focus on the work you do best.
@@ -1111,9 +1111,9 @@ if (currentPage === 'pricing') {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Zap className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>One Click Marketing Campaigns</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Zap className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>One Click Marketing Campaigns</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Deploy ready-to-go campaigns instantly with contractor-tested templates. 
                 Launch review drives, re-engagement campaigns, and holiday promos with zero setup time.
@@ -1134,9 +1134,9 @@ if (currentPage === 'pricing') {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Target className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Local SEO</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Target className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>Local SEO</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Own local search results when customers in your area need your services. 
                 Optimized Google profiles, directory listings, and content that puts you on the map.
@@ -1157,9 +1157,9 @@ if (currentPage === 'pricing') {
               </ul>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Users className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
-              <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Done-For-You Solutions</h3>
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Users className="h-10 w-10 sm:h-12 sm:w-12 mb-4" style={{color: '#FDE68A'}} />
+              <h3 className="text-lg sm:text-xl font-bold mb-3" style={{color: '#0A2540'}}>Done-For-You Solutions</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
                 Full-service marketing management that lets you stay on the tools. 
                 We run your campaigns, capture your leads, and handle everything while you close jobs.
@@ -1184,11 +1184,11 @@ if (currentPage === 'pricing') {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 bg-white">
+      <section id="about" className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{color: '#0A2540'}}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 px-4" style={{color: '#0A2540'}}>
                 Built by Contractors, for Contractors
               </h2>
               <p className="text-lg mb-6" style={{color: '#6B7280'}}>
@@ -1242,10 +1242,10 @@ if (currentPage === 'pricing') {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20" style={{backgroundColor: '#F9FAFB'}}>
+      <section id="testimonials" className="py-12 sm:py-16 md:py-20" style={{backgroundColor: '#F9FAFB'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4" style={{color: '#0A2540'}}>
               See What Contractors Are Saying
             </h2>
             <p className="text-xl" style={{color: '#6B7280'}}>
@@ -1254,7 +1254,7 @@ if (currentPage === 'pricing') {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-lg">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" style={{color: '#D4AF37'}} />
@@ -1275,7 +1275,7 @@ if (currentPage === 'pricing') {
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" style={{color: '#D4AF37'}} />
@@ -1296,7 +1296,7 @@ if (currentPage === 'pricing') {
               </div>
             </div>
 
-            <div className="bg-white p-8 rounded-xl shadow-lg">
+            <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
               <div className="flex items-center mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 fill-current" style={{color: '#D4AF37'}} />
@@ -1321,7 +1321,7 @@ if (currentPage === 'pricing') {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20" style={{backgroundColor: '#0A2540'}}>
+      <section className="py-12 sm:py-16 md:py-20" style={{backgroundColor: '#0A2540'}}>
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Stop Leaving Money on the Table
@@ -1359,10 +1359,10 @@ if (currentPage === 'pricing') {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 bg-white">
+      <section id="contact" className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4" style={{color: '#0A2540'}}>
               Let's Talk About Growing Your Business
             </h2>
             <p className="text-xl" style={{color: '#6B7280'}}>

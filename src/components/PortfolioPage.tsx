@@ -379,6 +379,9 @@ const PortfolioPage = ({
                 loading="lazy" 
                 className="w-full h-auto rounded-lg"
                 src="/images/image1.png"
+                decoding="async"
+                width="800"
+                height="600"
               />
               <img 
                 alt="website example" 
