@@ -24,12 +24,63 @@ const PrivacyPolicy = ({ onNavigateBack }: PrivacyPolicyProps) => {
                 GrowthLabPro
               </button>
             </div>
+            <nav className="hidden md:flex items-center space-x-8">
+              <button 
+                onClick={() => {
+                  onNavigateBack();
+                  setTimeout(() => {
+                    const servicesSection = document.getElementById('services');
+                    if (servicesSection) {
+                      servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Services
+              </button>
+              <button 
+                className="border-2 px-6 py-2 rounded-lg transition-colors font-medium mr-4"
+                style={{borderColor: '#D4AF37', color: '#D4AF37'}}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#D4AF37';
+                  e.target.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = '#D4AF37';
+                }}
+                onClick={() => {
+                  const loginUrl = 'https://app.growthlabpro.com';
+                  try {
+                    window.open(loginUrl, '_blank');
+                  } catch (error) {
+                    console.error('Error opening login:', error);
+                    window.location.href = loginUrl;
+                  }
+                }}
+              >
+                Login
+              </button>
+              <button 
+                className="text-white px-6 py-2 rounded-lg transition-colors font-medium"
+                style={{backgroundColor: '#D4AF37'}}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
+                onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
+              >
+                Book a Call
+              </button>
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Content */}
-      <div className="pt-20 pb-16">
+      <div className="pt-32 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-4xl font-bold mb-8" style={{color: '#0A2540'}}>
             Privacy Policy

@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { stripeProducts } from './stripe-config';
 import PricingPage from './components/PricingPage';
 import TermsOfService from './components/TermsOfService';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import PortfolioPage from './components/PortfolioPage';
+import TradesWeServe from './components/TradesWeServe';
+import ContactPage from './components/ContactPage';
+import Logo from './components/Logo';
 import { 
   Menu, 
   X, 
@@ -17,12 +21,40 @@ import {
   Phone,
   Mail,
   MapPin,
-  ShoppingCart
+  ShoppingCart,
+  ChevronDown
 } from 'lucide-react';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'pricing' | 'terms' | 'privacy'| 'success'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'pricing' | 'terms' | 'privacy' | 'success' | 'portfolio' | 'trades-we-serve' | 'contact'>('home');
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
+  const [isMobileAboutDropdownOpen, setIsMobileAboutDropdownOpen] = useState(false);
+  const aboutDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle About dropdown delay on mouse leave
+  const handleAboutMouseEnter = () => {
+    if (aboutDropdownTimeoutRef.current) {
+      clearTimeout(aboutDropdownTimeoutRef.current);
+      aboutDropdownTimeoutRef.current = null;
+    }
+    setIsAboutDropdownOpen(true);
+  };
+
+  const handleAboutMouseLeave = () => {
+    aboutDropdownTimeoutRef.current = setTimeout(() => {
+      setIsAboutDropdownOpen(false);
+    }, 300); // 300ms delay before closing
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (aboutDropdownTimeoutRef.current) {
+        clearTimeout(aboutDropdownTimeoutRef.current);
+      }
+    };
+  }, []);
   const [showPortfolio, setShowPortfolio] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -44,32 +76,30 @@ React.useEffect(() => {
     const path = window.location.pathname;
 
     // Check hash first (for compatibility)
-    if (hash === 'pricing') {
-      setCurrentPage('pricing');
-      return;
-    }
-    if (hash === 'terms') {
-      setCurrentPage('terms');
-      return;
-    }
-    if (hash === 'privacy') {
-      setCurrentPage('privacy');
-      return;
-    }
-    if (hash === 'success') {
-      setCurrentPage('success');
+    const hashPages: Record<string, any> = {
+      'pricing': 'pricing',
+      'terms': 'terms',
+      'privacy': 'privacy',
+      'success': 'success'
+    };
+
+    if (hash && hashPages[hash]) {
+      setCurrentPage(hashPages[hash]);
       return;
     }
 
     // Then check pathname
-    if (path === '/pricing') {
-      setCurrentPage('pricing');
-    } else if (path === '/terms') {
-      setCurrentPage('terms');
-    } else if (path === '/privacy') {
-      setCurrentPage('privacy');
-    } else if (path === '/success') {
-      setCurrentPage('success');
+    const pathPages: Record<string, any> = {
+      '/pricing': 'pricing',
+      '/terms': 'terms',
+      '/privacy': 'privacy',
+      '/success': 'success',
+      '/trades-we-serve': 'trades-we-serve',
+      '/contact': 'contact'
+    };
+
+    if (pathPages[path]) {
+      setCurrentPage(pathPages[path]);
     } else {
       setCurrentPage('home');
     }
@@ -326,11 +356,55 @@ React.useEffect(() => {
     }));
   };
 
+if (currentPage === 'portfolio') {
+  return (
+    <PortfolioPage
+      onNavigateBack={() => setCurrentPage('home')}
+      setCurrentPage={setCurrentPage}
+      isMenuOpen={isMenuOpen}
+      setIsMenuOpen={setIsMenuOpen}
+      showCart={showCart}
+      setShowCart={setShowCart}
+      getCartItemCount={getCartItemCount}
+      toggleMenu={toggleMenu}
+    />
+  );
+}
+
+if (currentPage === 'contact') {
+  return (
+    <ContactPage
+      onNavigateHome={() => setCurrentPage('home')}
+      onNavigateToPage={(page) => setCurrentPage(page as any)}
+      setCurrentPage={setCurrentPage}
+      showCart={showCart}
+      setShowCart={setShowCart}
+      getCartItemCount={getCartItemCount}
+    />
+  );
+}
+
+if (currentPage === 'trades-we-serve') {
+  return (
+    <TradesWeServe
+      onNavigateBack={() => setCurrentPage('home')}
+      setCurrentPage={setCurrentPage}
+      isMenuOpen={isMenuOpen}
+      setIsMenuOpen={setIsMenuOpen}
+      showCart={showCart}
+      setShowCart={setShowCart}
+      getCartItemCount={getCartItemCount}
+      toggleMenu={toggleMenu}
+    />
+  );
+}
+
 if (currentPage === 'pricing') {
   return (
     <>
       <PricingPage 
         onNavigateHome={() => setCurrentPage('home')}
+        onNavigateToPage={(page) => setCurrentPage(page as any)}
         cart={cart}
         addToCart={addToCart}
         removeFromCart={removeFromCart}
@@ -431,6 +505,8 @@ if (currentPage === 'pricing') {
   if (currentPage === 'privacy') {
     return <PrivacyPolicy onNavigateBack={() => setCurrentPage('home')} />;
   }
+
+
   if (currentPage === 'success') {
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
@@ -465,21 +541,103 @@ if (currentPage === 'pricing') {
       {/* Header */}
       <header className="fixed w-full top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold" style={{color: '#D4AF37'}}>GrowthLabPro</h1>
-              </div>
+              <Logo onClick={() => setCurrentPage('home')} size="md" />
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Services</a>
-              <button onClick={() => setCurrentPage('pricing')} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Pricing</button>
-              <a href="#about" className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>About</a>
+              <button 
+                onClick={() => {
+                  if (currentPage === 'home') {
+                    const servicesSection = document.getElementById('services');
+                    if (servicesSection) {
+                      servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  } else {
+                    setCurrentPage('home');
+                    setTimeout(() => {
+                      const servicesSection = document.getElementById('services');
+                      if (servicesSection) {
+                        servicesSection.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }
+                }}
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Services
+              </button>
+              <button 
+                onClick={() => {
+                  setCurrentPage('pricing');
+                  window.scrollTo(0, 0);
+                }} 
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Pricing
+              </button>
+              <button onClick={() => setCurrentPage('portfolio')} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}>Portfolio</button>
+              
+              {/* About Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={handleAboutMouseEnter}
+                onMouseLeave={handleAboutMouseLeave}
+              >
+                <button 
+                  className="font-medium transition-colors flex items-center" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  <span>About</span>
+                  <ChevronDown 
+                    size={16} 
+                    className="ml-1" 
+                    style={{transform: isAboutDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s'}}
+                  />
+                </button>
+                
+                {isAboutDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => { 
+                          setCurrentPage('trades-we-serve'); 
+                          setIsAboutDropdownOpen(false);
+                          window.scrollTo(0, 0);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+                        style={{color: '#0A2540'}}
+                      >
+                        Trades We Serve
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <a href="#testimonials" className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Reviews</a>
-              <a href="#contact" className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Contact</a>
+              <button 
+                onClick={() => {
+                  setCurrentPage('contact');
+                  window.scrollTo(0, 0);
+                }} 
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Contact
+              </button>
               
               {/* Cart Button */}
               <div className="relative">
@@ -531,9 +689,9 @@ if (currentPage === 'pricing') {
                 style={{backgroundColor: '#D4AF37'}}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                onClick={() => setCurrentPage('pricing')}
+                onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
               >
-                Get Started
+                Book a Call
               </button>
             </nav>
 
@@ -555,11 +713,107 @@ if (currentPage === 'pricing') {
           {isMenuOpen && (
             <div className="md:hidden">
               <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
-                <a href="#services" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Services</a>
-                <button onClick={() => setCurrentPage('pricing')} className="block px-3 py-2 transition-colors text-left w-full" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Pricing</button>
-                <a href="#about" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>About</a>
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    if (currentPage === 'home') {
+                      setTimeout(() => {
+                        const servicesSection = document.getElementById('services');
+                        if (servicesSection) {
+                          servicesSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }, 100);
+                    } else {
+                      setCurrentPage('home');
+                      setTimeout(() => {
+                        const servicesSection = document.getElementById('services');
+                        if (servicesSection) {
+                          servicesSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }, 200);
+                    }
+                  }}
+                  className="block px-3 py-2 transition-colors text-left w-full" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  Services
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setCurrentPage('pricing');
+                    window.scrollTo(0, 0);
+                  }} 
+                  className="block px-3 py-2 transition-colors text-left w-full" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  Pricing
+                </button>
+                <button onClick={() => { setCurrentPage('portfolio'); setIsMenuOpen(false); }} className="block px-3 py-2 transition-colors text-left w-full" style={{color: '#0A2540'}} onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}>Portfolio</button>
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setCurrentPage('contact');
+                    window.scrollTo(0, 0);
+                  }} 
+                  className="block px-3 py-2 transition-colors text-left w-full" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  Contact
+                </button>
+                
+                {/* Mobile About Dropdown */}
+                <div>
+                  <button 
+                    onClick={() => setIsMobileAboutDropdownOpen(!isMobileAboutDropdownOpen)}
+                    className="w-full flex items-center justify-between px-3 py-2 transition-colors" 
+                    style={{color: '#0A2540'}} 
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                    onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                  >
+                    <span>About</span>
+                    <ChevronDown 
+                      size={16} 
+                      style={{transform: isMobileAboutDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s'}}
+                    />
+                  </button>
+                  {isMobileAboutDropdownOpen && (
+                    <div className="pl-4 space-y-1">
+                      <button
+                        onClick={() => { 
+                          setCurrentPage('trades-we-serve'); 
+                          setIsMenuOpen(false); 
+                          setIsMobileAboutDropdownOpen(false);
+                          window.scrollTo(0, 0);
+                        }}
+                        className="block w-full text-left px-3 py-2 transition-colors text-sm"
+                        style={{color: '#0A2540'}}
+                      >
+                        Trades We Serve
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <a href="#testimonials" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Reviews</a>
-                <a href="#contact" className="block px-3 py-2 transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Contact</a>
+                <button 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setCurrentPage('contact');
+                    window.scrollTo(0, 0);
+                  }} 
+                  className="block px-3 py-2 transition-colors text-left w-full" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  Contact
+                </button>
                 <button 
                   className="w-full text-left px-3 py-2 border-2 rounded-lg transition-colors mb-2"
                   style={{borderColor: '#D4AF37', color: '#D4AF37'}}
@@ -589,9 +843,9 @@ if (currentPage === 'pricing') {
                   style={{backgroundColor: '#D4AF37'}}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                  onClick={() => setCurrentPage('pricing')}
+                  onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
                 >
-                  Get Started
+                  Book a Call
                 </button>
               </div>
             </div>
@@ -600,16 +854,16 @@ if (currentPage === 'pricing') {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-20 pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
+      <section className="pt-32 pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight" style={{color: '#0A2540'}}>
-              Website Design & Marketing<br />
-              <span style={{color: '#D4AF37'}}>Systems for Contractors</span>
+              Marketing That Actually Works<br />
+              <span style={{color: '#D4AF37'}}>Built Specifically for Contractors</span>
             </h1>
             <p className="text-xl mb-8 max-w-3xl mx-auto" style={{color: '#6B7280'}}>
-              Smarter campaigns. Faster results. Transform your contracting business with 
-              professional websites and proven marketing systems that generate qualified leads.
+              Stop wasting money on marketing that doesn't convert. We build contractor-focused websites 
+              and automated systems that turn browsers into booked jobs and phone calls into closed deals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
@@ -617,7 +871,10 @@ if (currentPage === 'pricing') {
                 style={{backgroundColor: '#D4AF37'}}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                onClick={() => setCurrentPage('pricing')}
+                onClick={() => {
+                  setCurrentPage('pricing');
+                  window.scrollTo(0, 0);
+                }}
               >
                 Start Growing Today
                 <ArrowRight className="ml-2" size={20} style={{color: '#FDE68A'}} />
@@ -625,7 +882,7 @@ if (currentPage === 'pricing') {
               <button 
                 className="border-2 px-8 py-4 rounded-lg transition-colors text-lg font-semibold"
                 style={{borderColor: '#D1D5DB', color: '#0A2540'}}
-                onClick={() => setShowPortfolio(true)}
+                onClick={() => setCurrentPage('portfolio')}
                 onMouseEnter={(e) => {
                   e.target.style.borderColor = '#D4AF37';
                   e.target.style.color = '#D4AF37';
@@ -738,9 +995,12 @@ if (currentPage === 'pricing') {
                   style={{backgroundColor: '#D4AF37'}}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                  onClick={() => setShowPortfolio(false)}
+                  onClick={() => {
+                    setShowPortfolio(false);
+                    window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank');
+                  }}
                 >
-                  Get Started Today
+                  Book a Call
                 </button>
               </div>
             </div>
@@ -773,11 +1033,11 @@ if (currentPage === 'pricing') {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
-              Complete Marketing Solutions for Contractors
+              Everything Your Contractor Business Needs to Grow
             </h2>
             <p className="text-xl max-w-3xl mx-auto" style={{color: '#6B7280'}}>
-              From professional websites to lead generation systems, we provide everything 
-              your contracting business needs to dominate your local market.
+              Professional websites, lead capture systems, review automation, and marketing campaigns 
+              designed specifically for tradespeople. Stop struggling with DIY solutions and start scaling.
             </p>
           </div>
 
@@ -786,8 +1046,8 @@ if (currentPage === 'pricing') {
               <Globe className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Professional Websites</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Mobile-responsive websites designed specifically for contractors. Fast loading, 
-                SEO-optimized, and conversion-focused with professional design.
+                Contractor websites built for results, not just looks. Lightning-fast loading, 
+                search engine optimized, and strategically designed to turn visitors into leads.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -809,8 +1069,8 @@ if (currentPage === 'pricing') {
               <Phone className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Missed Call Text Back</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Automatically send text messages to customers who call but don't reach you. 
-                Never miss a potential lead again with instant follow-up.
+                Instantly text every caller you miss, turning unanswered rings into active conversations. 
+                No more lost leads—every call gets a follow-up, even when you're on another job.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -832,8 +1092,8 @@ if (currentPage === 'pricing') {
               <Star className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Automated Review Generator</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Automatically request and collect positive reviews from satisfied customers. 
-                Build your online reputation with systematic review generation.
+                Systematically gather 5-star reviews from happy customers without lifting a finger. 
+                Build a reputation that brings in new business while you focus on the work you do best.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -855,8 +1115,8 @@ if (currentPage === 'pricing') {
               <Zap className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>One Click Marketing Campaigns</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Launch complete marketing campaigns with a single click. Pre-built templates 
-                for Google Ads, Facebook ads, and email marketing campaigns.
+                Deploy ready-to-go campaigns instantly with contractor-tested templates. 
+                Launch review drives, re-engagement campaigns, and holiday promos with zero setup time.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -878,8 +1138,8 @@ if (currentPage === 'pricing') {
               <Target className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Local SEO</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Dominate local search results and get found by customers in your service area. 
-                Google My Business optimization and local directory listings.
+                Own local search results when customers in your area need your services. 
+                Optimized Google profiles, directory listings, and content that puts you on the map.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -901,8 +1161,8 @@ if (currentPage === 'pricing') {
               <Users className="h-12 w-12 mb-4" style={{color: '#FDE68A'}} />
               <h3 className="text-xl font-bold mb-3" style={{color: '#0A2540'}}>Done-For-You Solutions</h3>
               <p className="mb-4" style={{color: '#6B7280'}}>
-                Complete marketing packages managed by our team. Focus on your work 
-                while we handle your marketing and lead generation.
+                Full-service marketing management that lets you stay on the tools. 
+                We run your campaigns, capture your leads, and handle everything while you close jobs.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center text-sm" style={{color: '#6B7280'}}>
@@ -929,50 +1189,49 @@ if (currentPage === 'pricing') {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{color: '#0A2540'}}>
-                Why Contractors Choose GrowthLabPro
+                Built by Contractors, for Contractors
               </h2>
               <p className="text-lg mb-6" style={{color: '#6B7280'}}>
-                We understand the unique challenges contractors face in growing their business. 
-                That's why we've developed specialized marketing systems that work specifically 
-                for the contracting industry.
+                We get it—you didn't start your trade business to become a marketing expert. 
+                That's why we built systems specifically for contractors who want results, not headaches.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 mr-3 mt-1" style={{color: '#D4AF37'}} />
                   <div>
                     <h4 className="font-semibold" style={{color: '#0A2540'}}>Industry Expertise</h4>
-                    <p style={{color: '#6B7280'}}>Deep understanding of contractor marketing needs and customer behavior.</p>
+                    <p style={{color: '#6B7280'}}>We know how contractors think, work, and what actually converts prospects into paying customers.</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 mr-3 mt-1" style={{color: '#D4AF37'}} />
                   <div>
                     <h4 className="font-semibold" style={{color: '#0A2540'}}>Proven Results</h4>
-                    <p style={{color: '#6B7280'}}>Track record of helping contractors double and triple their lead generation.</p>
+                    <p style={{color: '#6B7280'}}>Real numbers from real contractors—doubled leads, tripled bookings, and consistent growth month over month.</p>
                   </div>
                 </div>
                 <div className="flex items-start">
                   <CheckCircle className="h-6 w-6 mr-3 mt-1" style={{color: '#D4AF37'}} />
                   <div>
                     <h4 className="font-semibold" style={{color: '#0A2540'}}>Full-Service Solutions</h4>
-                    <p style={{color: '#6B7280'}}>Everything you need in one place - from websites to lead generation systems.</p>
+                    <p style={{color: '#6B7280'}}>One partner, multiple solutions. Websites, lead capture, reviews, and campaigns—all integrated and working together.</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="p-8 rounded-xl border" style={{backgroundColor: '#F9FAFB', borderColor: '#E5E7EB'}}>
               <div className="text-center">
-                <h3 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>Ready to Grow Your Business?</h3>
+                <h3 className="text-2xl font-bold mb-4" style={{color: '#0A2540'}}>Ready to Stop Losing Leads?</h3>
                 <p className="mb-6" style={{color: '#6B7280'}}>
-                  Join hundreds of contractors who have transformed their businesses with GrowthLabPro's 
-                  marketing systems. Get started with a free consultation today.
+                  Hundreds of contractors are already growing with our systems. Book a free strategy call 
+                  and see exactly how we'll help you book more jobs and scale your operation.
                 </p>
                 <button 
                   className="text-white px-8 py-3 rounded-lg transition-colors font-semibold"
                   style={{backgroundColor: '#D4AF37'}}
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                  onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/growthlabpro', '_blank')}
+                  onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
                 >
                   Schedule Free Consultation
                 </button>
@@ -987,10 +1246,10 @@ if (currentPage === 'pricing') {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
-              What Our Clients Say
+              See What Contractors Are Saying
             </h2>
             <p className="text-xl" style={{color: '#6B7280'}}>
-              Real results from real contractors who trusted GrowthLabPro with their marketing.
+              Real feedback from real contractors who turned their marketing around with GrowthLabPro.
             </p>
           </div>
 
@@ -1002,8 +1261,8 @@ if (currentPage === 'pricing') {
                 ))}
               </div>
               <p className="mb-6" style={{color: '#6B7280'}}>
-                "GrowthLabPro completely transformed our online presence. We went from 2-3 leads per month 
-                to over 15 qualified leads. The ROI has been incredible."
+                "Game changer for our business. We were stuck at 2-3 leads a month and now we're getting 
+                15+ qualified leads consistently. The return on investment speaks for itself."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold" style={{backgroundColor: '#D4AF37'}}>
@@ -1023,8 +1282,8 @@ if (currentPage === 'pricing') {
                 ))}
               </div>
               <p className="mb-6" style={{color: '#6B7280'}}>
-                "The team at GrowthLabPro knows contractors. Their marketing strategies actually work 
-                and they understand our industry better than any agency we've worked with."
+                "They actually understand how contractors operate. Their strategies work because they're 
+                built for our industry, not generic business advice that doesn't fit our world."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold" style={{backgroundColor: '#D4AF37'}}>
@@ -1044,8 +1303,8 @@ if (currentPage === 'pricing') {
                 ))}
               </div>
               <p className="mb-6" style={{color: '#6B7280'}}>
-                "Our new website looks amazing and the lead generation system works around the clock. 
-                Best investment we've made for our business growth."
+                "The website looks professional and the automation runs 24/7 capturing leads even when 
+                we're sleeping. Hands down the best money we've spent on growing this business."
               </p>
               <div className="flex items-center">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold" style={{backgroundColor: '#D4AF37'}}>
@@ -1065,11 +1324,11 @@ if (currentPage === 'pricing') {
       <section className="py-20" style={{backgroundColor: '#0A2540'}}>
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Transform Your Contracting Business?
+            Stop Leaving Money on the Table
           </h2>
           <p className="text-xl mb-8" style={{color: '#CBD5E1'}}>
-            Join successful contractors who chose GrowthLabPro for smarter campaigns and faster results. 
-            Get your free marketing consultation today.
+            Contractors everywhere are scaling with systems that work. Book a free strategy session 
+            and discover how to turn your marketing into a lead-generating machine.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
@@ -1091,7 +1350,7 @@ if (currentPage === 'pricing') {
                 e.target.style.backgroundColor = 'transparent';
                 e.target.style.color = 'white';
               }}
-             onClick={() => setCurrentPage('pricing')}
+             onClick={() => setCurrentPage('portfolio')}
             >
               View Case Studies
             </button>
@@ -1104,10 +1363,10 @@ if (currentPage === 'pricing') {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
-              Get In Touch
+              Let's Talk About Growing Your Business
             </h2>
             <p className="text-xl" style={{color: '#6B7280'}}>
-              Ready to grow your contracting business? Let's discuss your marketing goals.
+              Have questions? Want to see how we can help? Drop us a line and we'll get back to you fast.
             </p>
           </div>
 
@@ -1243,15 +1502,21 @@ if (currentPage === 'pricing') {
       {/* Footer */}
       <footer className="text-white py-12" style={{backgroundColor: '#0A2540'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#D4AF37'}}>GrowthLabPro</h3>
-              <p className="mb-4" style={{color: '#94A3B8'}}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8" style={{alignItems: 'flex-start'}}>
+            <div className="flex flex-col">
+              <div className="mb-4" style={{display: 'flex', alignItems: 'baseline', minHeight: '24px'}}>
+                <img 
+                  src="/images/logo footer.png" 
+                  alt="GrowthLabPro" 
+                  style={{height: '160px', width: 'auto', objectFit: 'contain', display: 'block', marginTop: '-60px', marginLeft: '-30px'}}
+                />
+              </div>
+              <p className="mb-4" style={{color: '#94A3B8', marginTop: '-70px'}}>
                 Website Design & Marketing Systems for Contractors. 
                 Smarter campaigns. Faster results.
               </p>
               <p className="text-sm" style={{color: '#64748B'}}>
-                © 2025 GrowthLabPro. All rights reserved.
+                © 2026 GrowthLabPro. All rights reserved.
               </p>
               <div className="flex space-x-4 mt-2">
                 <button 
@@ -1291,7 +1556,7 @@ if (currentPage === 'pricing') {
                 <li><a href="#about" className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>About</a></li>
                 <li><a href="#testimonials" className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Reviews</a></li>
                 <li><a href="#contact" className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Contact</a></li>
-                <li><a href="#" className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Case Studies</a></li>
+                <li><button onClick={() => setCurrentPage('portfolio')} className="transition-colors text-left" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Case Studies</button></li>
               </ul>
             </div>
             
@@ -1300,7 +1565,6 @@ if (currentPage === 'pricing') {
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
                 <li>Phone: 225-454-5977</li>
                 <li>Email: contact@growthlabpro.com</li>
-                <li>Baton Rouge, LA</li>
               </ul>
             </div>
           </div>

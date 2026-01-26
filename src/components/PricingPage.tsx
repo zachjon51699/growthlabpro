@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Logo from './Logo';
 import { stripeProducts } from '../stripe-config';
 import TermsOfService from './TermsOfService';
 import PrivacyPolicy from './PrivacyPolicy';
 import { 
   Check, 
   X, 
-  Star, 
   ArrowRight, 
-  Zap, 
-  Crown, 
   Rocket,
-  Shield,
-  Globe,
   Home,
-  ShoppingCart
+  ShoppingCart,
+  Star,
+  ChevronDown,
+  Globe,
+  Phone,
+  Zap,
+  Target,
+  Users,
+  CheckCircle
 } from 'lucide-react';
 
 interface CartItem {
@@ -27,6 +31,7 @@ interface CartItem {
 
 interface PricingPageProps {
   onNavigateHome: () => void;
+  onNavigateToPage?: (page: string) => void;
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   removeFromCart: (itemId: string) => void;
@@ -35,11 +40,43 @@ interface PricingPageProps {
   setShowCart: (show: boolean) => void;
 }
 
-const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartItemCount, showCart, setShowCart }: PricingPageProps) => {
+const PricingPage = ({ onNavigateHome, onNavigateToPage, cart, addToCart, removeFromCart, getCartItemCount, showCart, setShowCart }: PricingPageProps) => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
+  const [isMobileAboutDropdownOpen, setIsMobileAboutDropdownOpen] = useState(false);
+  const aboutDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Handle About dropdown delay on mouse leave
+  const handleAboutMouseEnter = () => {
+    if (aboutDropdownTimeoutRef.current) {
+      clearTimeout(aboutDropdownTimeoutRef.current);
+      aboutDropdownTimeoutRef.current = null;
+    }
+    setIsAboutDropdownOpen(true);
+  };
+
+  const handleAboutMouseLeave = () => {
+    aboutDropdownTimeoutRef.current = setTimeout(() => {
+      setIsAboutDropdownOpen(false);
+    }, 300);
+  };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (aboutDropdownTimeoutRef.current) {
+        clearTimeout(aboutDropdownTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const getCartTotal = () => {
     return cart.reduce((total, item) => total + item.price, 0);
@@ -126,16 +163,6 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
         let productKey;
         if (item.name === 'Growth Starter') {
           productKey = 'contractor-essentials';
-        } else if (item.name === 'Growth Pro') {
-          productKey = 'contractor-supreme';
-        } else if (item.name === 'Growth Enterprise') {
-          productKey = 'contractor-enterprise';
-        } else if (item.name === 'Custom Landing Pages') {
-          productKey = 'landing-pages';
-        } else if (item.name === 'Social Media Management') {
-          productKey = 'social-media';
-        } else if (item.name === 'Video Marketing Package') {
-          productKey = 'video-marketing';
         } else {
           throw new Error('Product configuration not found for: ' + item.name);
         }
@@ -252,120 +279,121 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
       annualPrice: 2673, // 10% discount
       popular: false,
       features: [
-        'Functional Website (up to 10 pages)',
+        'Professional Website (up to 10 pages)',
         'Basic Booking Form (Request a Quote)',
-        'Automated Lead Follow Up',
-        'Missed Call Text Back',
+        'Lead Follow-Up',
+        'Missed Call Follow-Up',
         'Automated Google Reviews',
-        'One-Click Marketing Campaigns',
+        'Marketing Campaigns',
         'On-Site SEO',
-      ],
-      notIncluded: [
-        'Qualified Leads & Appointments',
-        'Online Booking System with Calendar Sync',
-        'Google Ads Management',
-        'Google My Business Optimizations',
-        'Blog Posts',
-        'Enterprise-Level Features',
       ]
-    },
-    {
-      name: 'Growth Pro',
-      icon: <Star className="h-8 w-8" style={{color: '#FDE68A'}} />,
-      description: 'Everything in Growth Starter +',
-      monthlyPrice: 750,
-      annualPrice: 6750, // 10% discount
-      popular: true,
-      features: [
-        'Everything in Growth Starter',
-        'Qualified Leads & Appointments',
-        'Online Booking System with Calendar Sync',
-        'Google Ads Management',
-        'Google My Business Optimizations',
-        'Blog Posts',
-      ],
-      notIncluded: [
-        'Multi-location Management',
-        'White-label Client Reporting',
-        'Custom API Integrations',
-        'Advanced Custom Features (Enterprise)',
-      ]
-    },
-    {
-      name: 'Growth Enterprise',
-      icon: <Crown className="h-8 w-8" style={{color: '#FDE68A'}} />,
-      description: 'Custom solutions for large contractor operations',
-      monthlyPrice: 1500,
-      annualPrice: 13500, // 10% discount
-      popular: false,
-      features: [
-        'Everything in Contractor Essentials',
-        'Qualified Leads & Appointments',
-        'Online Booking System with Calendar Sync & Automated Confirmations',
-        'Google Ads Management',
-        'Google My Business Optimizations',
-        'Blog Posts',
-        'Multi-location Management',
-        'White-label Client Reporting',
-        'Custom API Integrations',
-        '24/7 Priority Support',
-        'Custom Development Work',
-        'Advanced Analytics Dashboard',
-        'Custom Automations',
-      ],
-      notIncluded: []
     }
   ];
 
-  const addOns = [
-    {
-      name: 'Custom Landing Pages',
-      description: 'Service-specific landing pages for better conversions',
-      price: '$497 per page',
-      icon: <Globe className="h-6 w-6" style={{color: '#FDE68A'}} />
-    },
-    {
-      name: 'Social Media Management',
-      description: 'Complete social media content and posting service',
-      price: '$297/month',
-      icon: <Zap className="h-6 w-6" style={{color: '#FDE68A'}} />
-    },
-    {
-      name: 'Video Marketing Package',
-      description: 'Professional video content creation and marketing',
-      price: '$497/month',
-      icon: <Shield className="h-6 w-6" style={{color: '#FDE68A'}} />
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation Header */}
       <header className="fixed w-full top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <button 
-                  onClick={onNavigateHome}
-                  className="text-2xl font-bold transition-colors" 
-                  style={{color: '#D4AF37'}}
-                  onMouseEnter={(e) => e.target.style.color = '#B8860B'}
-                  onMouseLeave={(e) => e.target.style.color = '#D4AF37'}
-                >
-                  GrowthLabPro
-                </button>
-              </div>
+              <Logo onClick={onNavigateHome} size="md" />
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <button onClick={onNavigateHome} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Services</button>
+              <button 
+                onClick={() => {
+                  onNavigateHome();
+                  setTimeout(() => {
+                    const servicesSection = document.getElementById('services');
+                    if (servicesSection) {
+                      servicesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Services
+              </button>
               <a href="#pricing" className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Pricing</a>
-              <button onClick={onNavigateHome} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>About</button>
-              <button onClick={onNavigateHome} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Reviews</button>
-              <button onClick={onNavigateHome} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Contact</button>
+              {onNavigateToPage && (
+                <button onClick={() => onNavigateToPage('portfolio')} className="font-medium transition-colors" style={{color: '#0A2540'}} onMouseEnter={(e) => e.target.style.color = '#D4AF37'} onMouseLeave={(e) => e.target.style.color = '#0A2540'}>Portfolio</button>
+              )}
+              {/* About Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={handleAboutMouseEnter}
+                onMouseLeave={handleAboutMouseLeave}
+              >
+                <button 
+                  className="font-medium transition-colors flex items-center" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  <span>About</span>
+                  <ChevronDown 
+                    size={16} 
+                    className="ml-1" 
+                    style={{transform: isAboutDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s'}}
+                  />
+                </button>
+                
+                {isAboutDropdownOpen && onNavigateToPage && (
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => { 
+                          onNavigateToPage('trades-we-serve'); 
+                          setIsAboutDropdownOpen(false);
+                          window.scrollTo(0, 0);
+                        }}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+                        style={{color: '#0A2540'}}
+                      >
+                        Trades We Serve
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={() => {
+                  onNavigateHome();
+                  setTimeout(() => {
+                    const testimonialsSection = document.getElementById('testimonials');
+                    if (testimonialsSection) {
+                      testimonialsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                className="font-medium transition-colors" 
+                style={{color: '#0A2540'}} 
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+              >
+                Reviews
+              </button>
+              {onNavigateToPage && (
+                <button 
+                  onClick={() => {
+                    onNavigateToPage('contact');
+                    window.scrollTo(0, 0);
+                  }} 
+                  className="font-medium transition-colors" 
+                  style={{color: '#0A2540'}} 
+                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
+                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
+                >
+                  Contact
+                </button>
+              )}
               
               {/* Cart Button */}
               <button 
@@ -387,12 +415,36 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
               </button>
               
               <button 
+                className="border-2 px-6 py-2 rounded-lg transition-colors font-medium mr-4"
+                style={{borderColor: '#D4AF37', color: '#D4AF37'}}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#D4AF37';
+                  e.target.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.color = '#D4AF37';
+                }}
+                onClick={() => {
+                  const loginUrl = 'https://app.growthlabpro.com';
+                  try {
+                    window.open(loginUrl, '_blank');
+                  } catch (error) {
+                    console.error('Error opening login:', error);
+                    window.location.href = loginUrl;
+                  }
+                }}
+              >
+                Login
+              </button>
+              <button 
                 className="text-white px-6 py-2 rounded-lg transition-colors font-medium"
                 style={{backgroundColor: '#D4AF37'}}
                 onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
+                onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
               >
-                Get Started
+                Book a Call
               </button>
             </nav>
 
@@ -413,7 +465,7 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
       </header>
 
       {/* Header */}
-      <section className="pt-20 pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
+      <section className="pt-32 pb-16" style={{background: 'linear-gradient(to bottom right, #F9FAFB, #F3F4F6)'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6" style={{color: '#0A2540'}}>
             Simple, Transparent
@@ -453,7 +505,7 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
       {/* Pricing Cards */}
       <section id="pricing-cards" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
             {plans.map((plan, index) => (
               <div
                 key={plan.name}
@@ -470,7 +522,7 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
                   </div>
                 )}
                 
-                <div className="p-8">
+                <div className="p-10">
                   <div className="flex items-center mb-4">
                     {plan.icon}
                     <h3 className="text-2xl font-bold ml-3" style={{color: '#0A2540'}}>{plan.name}</h3>
@@ -543,17 +595,6 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
                       </div>
                     ))}
                     
-                    {plan.notIncluded.length > 0 && (
-                      <>
-                        <h4 className="font-semibold mt-6" style={{color: '#0A2540'}}>Not included:</h4>
-                        {plan.notIncluded.map((feature, featureIndex) => (
-                          <div key={featureIndex} className="flex items-start">
-                            <X className="h-5 w-5 mr-3 mt-0.5 flex-shrink-0" style={{color: '#9CA3AF'}} />
-                            <span className="text-sm" style={{color: '#9CA3AF'}}>{feature}</span>
-                          </div>
-                        ))}
-                      </>
-                    )}
                   </div>
                 </div>
               </div>
@@ -562,56 +603,147 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
         </div>
       </section>
 
-      {/* Add-ons Section */}
-      <section className="py-20" style={{backgroundColor: '#F9FAFB'}}>
+      {/* Features Grid */}
+      <section className="pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
-              Add-On Services
+              Everything Your Contractor Business Needs to Grow
             </h2>
-            <p className="text-xl" style={{color: '#6B7280'}}>
-              Enhance your plan with additional services tailored to your specific needs.
+            <p className="text-2xl font-bold mt-6" style={{color: '#D4AF37'}}>
+              All included for only $297/mo
             </p>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Professional Websites */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Globe className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>Professional Websites</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Contractor websites built for results, not just looks. Lightning-fast loading, search engine optimized, and strategically designed to turn visitors into leads.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Mobile-First Design
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Lead Capture Forms
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  SEO Optimization
+                </li>
+              </ul>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {addOns.map((addon, index) => (
-              <div key={index} className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0 mr-4">
-                    {addon.icon}
+            {/* Missed Call Text Back */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Phone className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>Missed Call Text Back</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Instantly text every caller you miss, turning unanswered rings into active conversations. No more lost leads—every call gets a follow-up, even when you're on another job.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Instant Text Response
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Custom Message Templates
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Lead Capture Integration
+                </li>
+              </ul>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold mb-2" style={{color: '#0A2540'}}>{addon.name}</h3>
-                    <p className="mb-3" style={{color: '#6B7280'}}>{addon.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold" style={{color: '#D4AF37'}}>{addon.price}</span>
-                      <button 
-                        className="text-sm px-4 py-2 rounded-lg transition-colors"
-                        style={{backgroundColor: '#D4AF37', color: 'white'}}
-                        onClick={() => {
-                          const addonItem: CartItem = {
-                            id: `addon-${index}`,
-                            name: addon.name,
-                            price: parseInt(addon.price.replace(/[^0-9]/g, '')),
-                            type: 'addon'
-                          };
-                          addToCart(addonItem);
-                          setShowCart(true);
-                        }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
-                        onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-                      >
-                        Add to Cart
-                      </button>
+
+            {/* Automated Review Generator */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Star className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>Automated Review Generator</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Systematically gather 5-star reviews from happy customers without lifting a finger. Build a reputation that brings in new business while you focus on the work you do best.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Automated Review Requests
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Multi-Platform Integration
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Review Response Management
+                </li>
+              </ul>
                     </div>
+
+            {/* One Click Marketing Campaigns */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Zap className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>One Click Marketing Campaigns</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Deploy ready-to-go campaigns instantly with contractor-tested templates. Launch review drives, re-engagement campaigns, and holiday promos with zero setup time.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Pre-Built Campaign Templates
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Multi-Platform Deployment
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Performance Tracking
+                </li>
+              </ul>
                   </div>
+
+            {/* Local SEO */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Target className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>Local SEO</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Own local search results when customers in your area need your services. Optimized Google profiles, directory listings, and content that puts you on the map.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Google My Business Optimization
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Local Directory Listings
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Local Keyword Optimization
+                </li>
+              </ul>
                 </div>
+
+            {/* Done-For-You Solutions */}
+            <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <Users className="h-12 w-12 mb-4" style={{color: 'rgb(253, 230, 138)'}} />
+              <h3 className="text-xl font-bold mb-3" style={{color: 'rgb(10, 37, 64)'}}>Done-For-You Solutions</h3>
+              <p className="mb-4" style={{color: 'rgb(107, 114, 128)'}}>Full-service marketing management that lets you stay on the tools. We run your campaigns, capture your leads, and handle everything while you close jobs.</p>
+              <ul className="space-y-2">
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Full Campaign Management
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Monthly Reporting
+                </li>
+                <li className="flex items-center text-sm" style={{color: 'rgb(107, 114, 128)'}}>
+                  <CheckCircle className="h-4 w-4 mr-2" style={{color: 'rgb(212, 175, 55)'}} />
+                  Dedicated Account Manager
+                </li>
+              </ul>
               </div>
-            ))}
           </div>
         </div>
       </section>
+
 
       {/* Shopping Cart Modal */}
       {showCart && (
@@ -632,7 +764,7 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
                 <div className="text-center py-8">
                   <ShoppingCart size={48} className="mx-auto mb-4" style={{ color: '#D1D5DB' }} />
                   <p className="text-lg mb-2" style={{ color: '#6B7280' }}>Your cart is empty</p>
-                  <p className="text-sm" style={{ color: '#9CA3AF' }}>Add a plan and any add-ons to get started</p>
+                  <p className="text-sm" style={{ color: '#9CA3AF' }}>Add a plan to get started</p>
                   <button
                     onClick={() => setShowCart(false)}
                     className="mt-4 text-white px-6 py-2 rounded-lg transition-colors font-medium"
@@ -726,72 +858,6 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
         </div>
       )}
 
-      {/* FAQ Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{color: '#0A2540'}}>
-              Frequently Asked Questions
-            </h2>
-          </div>
-          
-          <div className="space-y-8">
-            <div className="border-b border-gray-200 pb-8">
-              <h3 className="text-lg font-semibold mb-3" style={{color: '#0A2540'}}>
-                What's included in the setup process?
-              </h3>
-              <p style={{color: '#6B7280'}}>
-                Every plan includes a comprehensive onboarding process where we set up your website, 
-                marketing systems, and tracking. Our team handles all the technical details so you can 
-                focus on your contracting work.
-              </p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-8">
-              <h3 className="text-lg font-semibold mb-3" style={{color: '#0A2540'}}>
-                Can I upgrade or downgrade my plan?
-              </h3>
-              <p style={{color: '#6B7280'}}>
-                Yes, you can change your plan at any time. Upgrades take effect immediately, while 
-                downgrades take effect at your next billing cycle. We'll help you transition smoothly 
-                between plans.
-              </p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-8">
-              <h3 className="text-lg font-semibold mb-3" style={{color: '#0A2540'}}>
-                Do you require long-term contracts?
-              </h3>
-              <p style={{color: '#6B7280'}}>
-                No long-term contracts required. All plans are month-to-month, though you can save 10% 
-                by choosing annual billing. You can cancel anytime with 30 days notice.
-              </p>
-            </div>
-            
-            <div className="border-b border-gray-200 pb-8">
-              <h3 className="text-lg font-semibold mb-3" style={{color: '#0A2540'}}>
-                What kind of results can I expect?
-              </h3>
-              <p style={{color: '#6B7280'}}>
-                While results vary by market and business, our clients typically see a 2-3x increase 
-                in qualified leads within the first 90 days. We provide detailed reporting so you can 
-                track your ROI.
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-3" style={{color: '#0A2540'}}>
-                Do you work with all types of contractors?
-              </h3>
-              <p style={{color: '#6B7280'}}>
-                We specialize in home service contractors including roofers, plumbers, electricians, 
-                HVAC, landscapers, and general contractors. Our systems are proven across all these industries.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20" style={{backgroundColor: '#0A2540'}}>
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
@@ -808,7 +874,7 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
               style={{backgroundColor: '#D4AF37'}}
               onMouseEnter={(e) => e.target.style.backgroundColor = '#B8860B'}
               onMouseLeave={(e) => e.target.style.backgroundColor = '#D4AF37'}
-              onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/growthlabpro', '_blank')}
+              onClick={() => window.open('https://api.leadconnectorhq.com/widget/bookings/bookwithusdigitalmarketing-c88db2b9-1b27-4207-8b88-ac02f1888281', '_blank')}
             >
               Schedule Free Consultation
               <ArrowRight className="ml-2" size={20} style={{color: '#FDE68A'}} />
@@ -834,14 +900,20 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
       <footer className="text-white py-12" style={{backgroundColor: '#0A2540'}}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4" style={{color: '#D4AF37'}}>GrowthLabPro</h3>
-              <p className="mb-4" style={{color: '#94A3B8'}}>
+            <div className="flex flex-col">
+              <div className="mb-4" style={{display: 'flex', alignItems: 'baseline', minHeight: '24px'}}>
+                <img 
+                  src="/images/logo footer.png" 
+                  alt="GrowthLabPro" 
+                  style={{height: '160px', width: 'auto', objectFit: 'contain', display: 'block', marginTop: '-60px', marginLeft: '-30px'}}
+                />
+              </div>
+              <p className="mb-4" style={{color: '#94A3B8', marginTop: '-70px'}}>
                 Website Design & Marketing Systems for Contractors. 
                 Smarter campaigns. Faster results.
               </p>
               <p className="text-sm" style={{color: '#64748B'}}>
-                © 2025 GrowthLabPro. All rights reserved.
+                © 2026 GrowthLabPro. All rights reserved.
               </p>
               <div className="flex space-x-4 mt-2">
                 <button 
@@ -879,8 +951,27 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
                 <li><button onClick={onNavigateHome} className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>About</button></li>
-                <li><button onClick={onNavigateHome} className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Reviews</button></li>
-                <li><button onClick={onNavigateHome} className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Contact</button></li>
+                <li>
+                  <button 
+                    onClick={() => {
+                      onNavigateHome();
+                      setTimeout(() => {
+                        const testimonialsSection = document.getElementById('testimonials');
+                        if (testimonialsSection) {
+                          testimonialsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }, 100);
+                    }}
+                    className="transition-colors" 
+                    onMouseEnter={(e) => e.target.style.color = 'white'} 
+                    onMouseLeave={(e) => e.target.style.color = '#94A3B8'}
+                  >
+                    Reviews
+                  </button>
+                </li>
+                {onNavigateToPage && (
+                  <li><button onClick={() => onNavigateToPage('contact')} className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Contact</button></li>
+                )}
                 <li><button onClick={onNavigateHome} className="transition-colors" onMouseEnter={(e) => e.target.style.color = 'white'} onMouseLeave={(e) => e.target.style.color = '#94A3B8'}>Case Studies</button></li>
               </ul>
             </div>
@@ -890,7 +981,6 @@ const PricingPage = ({ onNavigateHome, cart, addToCart, removeFromCart, getCartI
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
                 <li>Phone: 225-454-5977</li>
                 <li>Email: contact@growthlabpro.com</li>
-                <li>Baton Rouge, LA</li>
               </ul>
             </div>
           </div>
