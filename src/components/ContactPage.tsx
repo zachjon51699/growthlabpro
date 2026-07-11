@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Logo from './Logo';
 import { ArrowRight, ChevronDown, ShoppingCart, Menu, X } from 'lucide-react';
+import type { AppPage } from '../types/app-page';
 
 interface ContactPageProps {
   onNavigateHome: () => void;
-  onNavigateToPage: (page: string) => void;
-  setCurrentPage: React.Dispatch<React.SetStateAction<"home" | "pricing" | "terms" | "privacy" | "success" | "portfolio" | "trades-we-serve" | "contact">>;
+  onNavigateToPage: (page: AppPage) => void;
+  setCurrentPage: React.Dispatch<React.SetStateAction<AppPage>>;
   showCart?: boolean;
   setShowCart?: (show: boolean) => void;
   getCartItemCount?: () => number;
