@@ -278,7 +278,7 @@ const PrivacyPolicy = ({ onNavigateBack }: PrivacyPolicyProps) => {
               </p>
               <div className="mt-4" style={{color: '#6B7280'}}>
                 <p>Email: contact@growthlabpro.com</p>
-                <p>Phone: (225) 454-5977</p>
+                <p>Phone: (225) 475-9305</p>
                 <p>Address: Baton Rouge, LA</p>
               </div>
             </section>

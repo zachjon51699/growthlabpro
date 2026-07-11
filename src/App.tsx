@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { stripeProducts } from './stripe-config';
 import PricingPage from './components/PricingPage';
 import TermsOfService from './components/TermsOfService';
@@ -24,10 +24,12 @@ import {
   ShoppingCart,
   ChevronDown
 } from 'lucide-react';
+import type { AppPage } from './types/app-page';
+import { appPageToPath, getAppPageForPathname, normalizePathname, readPageFromUrl } from './utils/app-routing';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'pricing' | 'terms' | 'privacy' | 'success' | 'portfolio' | 'trades-we-serve' | 'contact'>('home');
+  const [currentPage, setCurrentPage] = useState<AppPage>(() => readPageFromUrl());
   const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
   const [isMobileAboutDropdownOpen, setIsMobileAboutDropdownOpen] = useState(false);
   const aboutDropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,62 +70,85 @@ function App() {
   });
   const [isSubmittingContact, setIsSubmittingContact] = useState(false);
   const [contactMessage, setContactMessage] = useState('');
+  const skipInitialUrlPush = useRef(true);
 
-// Handle URL-based navigation on page load
-React.useEffect(() => {
-  const handleRouting = () => {
-    const hash = window.location.hash.replace('#', '');
-    const path = window.location.pathname;
+  // Sync in-memory "page" with URL (/, /pricing, etc.). /contractor-optin is handled in AppRoutes, not here.
+  useLayoutEffect(() => {
+    setCurrentPage(readPageFromUrl());
+  }, []);
 
-    // Check hash first (for compatibility)
-    const hashPages: Record<string, any> = {
-      'pricing': 'pricing',
-      'terms': 'terms',
-      'privacy': 'privacy',
-      'success': 'success'
+  // Keep UI in sync when the URL changes (back/forward, hash links)
+  React.useEffect(() => {
+    const handleRouting = () => {
+      setCurrentPage(readPageFromUrl());
     };
 
-    if (hash && hashPages[hash]) {
-      setCurrentPage(hashPages[hash]);
+    window.addEventListener('hashchange', handleRouting);
+    window.addEventListener('popstate', handleRouting);
+    return () => {
+      window.removeEventListener('hashchange', handleRouting);
+      window.removeEventListener('popstate', handleRouting);
+    };
+  }, []);
+
+  // Same-origin <a href="/..."> should use client routing (avoids full reload; matches trailing-slash URLs)
+  React.useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0) {
+        return;
+      }
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+        return;
+      }
+      const chain = typeof e.composedPath === 'function' ? e.composedPath() : [];
+      const a = chain.find((n): n is HTMLAnchorElement => n instanceof HTMLAnchorElement && n.hasAttribute('href'));
+      if (!a) {
+        return;
+      }
+      if (a.target === '_blank' || a.hasAttribute('download')) {
+        return;
+      }
+      let url: URL;
+      try {
+        url = new URL(a.href, window.location.origin);
+      } catch {
+        return;
+      }
+      if (url.origin !== window.location.origin) {
+        return;
+      }
+      const nextPage = getAppPageForPathname(url.pathname);
+      if (nextPage === null) {
+        return;
+      }
+      const here = normalizePathname(window.location.pathname);
+      const there = normalizePathname(url.pathname);
+      if (here === there) {
+        if (url.hash) {
+          return; // in-page #anchor — let the browser handle scrolling
+        }
+        return;
+      }
+      e.preventDefault();
+      setCurrentPage(nextPage);
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
+
+  // When in-app state changes, sync the address bar. Skip the first run so we never push "/" over a valid deep link before useLayout has applied readPageFromUrl().
+  React.useEffect(() => {
+    if (skipInitialUrlPush.current) {
+      skipInitialUrlPush.current = false;
       return;
     }
+    const currentPath = normalizePathname(window.location.pathname);
+    const newPath = appPageToPath(currentPage);
 
-    // Then check pathname
-    const pathPages: Record<string, any> = {
-      '/pricing': 'pricing',
-      '/terms': 'terms',
-      '/privacy': 'privacy',
-      '/success': 'success',
-      '/trades-we-serve': 'trades-we-serve',
-      '/contact': 'contact'
-    };
-
-    if (pathPages[path]) {
-      setCurrentPage(pathPages[path]);
-    } else {
-      setCurrentPage('home');
-    }
-  };
-
-  handleRouting();
-
-  const handleHashChange = () => handleRouting();
-  window.addEventListener('hashchange', handleHashChange);
-  return () => window.removeEventListener('hashchange', handleHashChange);
-}, []);
-
-  // Update URL when page changes
-  React.useEffect(() => {
-    // Try pathname first, fallback to hash if needed
-    const currentPath = window.location.pathname;
-    const newPath = currentPage === 'home' ? '/' : `/${currentPage}`;
-    
     if (currentPath !== newPath) {
-      // Try to use pathname, but fallback to hash if there are issues
       try {
         window.history.pushState({}, '', newPath);
-      } catch (error) {
-        // Fallback to hash-based routing
+      } catch {
         window.location.hash = currentPage === 'home' ? '' : currentPage;
       }
     }
@@ -375,7 +400,7 @@ if (currentPage === 'contact') {
   return (
     <ContactPage
       onNavigateHome={() => setCurrentPage('home')}
-      onNavigateToPage={(page) => setCurrentPage(page as any)}
+      onNavigateToPage={(page) => setCurrentPage(page)}
       setCurrentPage={setCurrentPage}
       showCart={showCart}
       setShowCart={setShowCart}
@@ -404,7 +429,7 @@ if (currentPage === 'pricing') {
     <>
       <PricingPage 
         onNavigateHome={() => setCurrentPage('home')}
-        onNavigateToPage={(page) => setCurrentPage(page as any)}
+        onNavigateToPage={(page) => setCurrentPage(page)}
         cart={cart}
         addToCart={addToCart}
         removeFromCart={removeFromCart}
@@ -754,19 +779,6 @@ if (currentPage === 'pricing') {
                   Pricing
                 </button>
                 <button onClick={() => { setCurrentPage('portfolio'); setIsMenuOpen(false); }} className="block px-3 py-2 transition-colors text-left w-full" style={{color: '#0A2540'}} onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}>Portfolio</button>
-                <button 
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    setCurrentPage('contact');
-                    window.scrollTo(0, 0);
-                  }} 
-                  className="block px-3 py-2 transition-colors text-left w-full" 
-                  style={{color: '#0A2540'}} 
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'} 
-                  onMouseLeave={(e) => e.currentTarget.style.color = '#0A2540'}
-                >
-                  Contact
-                </button>
                 
                 {/* Mobile About Dropdown */}
                 <div>
@@ -1378,7 +1390,7 @@ if (currentPage === 'pricing') {
                   <Phone className="h-6 w-6 mr-4" style={{color: '#FDE68A'}} />
                   <div>
                     <div className="font-semibold" style={{color: '#0A2540'}}>Phone</div>
-                    <div style={{color: '#6B7280'}}>225-454-5977</div>
+                    <div style={{color: '#6B7280'}}>225-475-9305</div>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -1563,7 +1575,7 @@ if (currentPage === 'pricing') {
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
-                <li>Phone: 225-454-5977</li>
+                <li>Phone: 225-475-9305</li>
                 <li>Email: contact@growthlabpro.com</li>
               </ul>
             </div>

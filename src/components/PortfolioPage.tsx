@@ -1,10 +1,11 @@
 import { Menu, X, ShoppingCart, ChevronDown, ArrowRight } from 'lucide-react';
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react';
 import Logo from './Logo';
+import type { AppPage } from '../types/app-page';
 
 interface PortfolioPageProps {
   onNavigateBack: () => void;
-  setCurrentPage: Dispatch<SetStateAction<'home' | 'pricing' | 'terms' | 'privacy' | 'success' | 'portfolio' | 'trades-we-serve' | 'contact'>>;
+  setCurrentPage: Dispatch<SetStateAction<AppPage>>;
   isMenuOpen: boolean;
   setIsMenuOpen: (open: boolean) => void;
   showCart: boolean;
@@ -539,7 +540,7 @@ const PortfolioPage = ({
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
-                <li>Phone: 225-454-5977</li>
+                <li>Phone: 225-475-9305</li>
                 <li>Email: contact@growthlabpro.com</li>
               </ul>
             </div>

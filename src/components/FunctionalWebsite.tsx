@@ -705,7 +705,7 @@ const FunctionalWebsite = ({
             <div>
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2" style={{color: '#94A3B8'}}>
-                <li>Phone: 225-454-5977</li>
+                <li>Phone: 225-475-9305</li>
                 <li>Email: contact@growthlabpro.com</li>
                 <li>Baton Rouge, LA</li>
               </ul>
