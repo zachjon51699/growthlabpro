@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import App from './App';
 import ContractorOptinLandingPage from './components/ContractorOptinLandingPage';
+import MetaPixelRouteTracker from './components/MetaPixelRouteTracker';
 
 function ContractorOptinWithNav() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ function ContractorOptinWithNav() {
 export default function AppRoutes() {
   return (
     <BrowserRouter>
+      <MetaPixelRouteTracker />
       <Routes>
         <Route path="/contractor-optin" element={<ContractorOptinWithNav />} />
         <Route path="*" element={<App />} />
