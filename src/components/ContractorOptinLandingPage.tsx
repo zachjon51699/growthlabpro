@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import {
   Check,
   ChevronDown,
@@ -9,10 +9,10 @@ import {
   FolderKanban,
   Bell,
 } from 'lucide-react';
+import QualificationAssessmentModal from './QualificationAssessmentModal';
 
 const VSL_VIDEO_SRC = '/videos/how-contractors-get-more-free-leads.mp4';
 const CANONICAL_PATH = '/contractor-optin';
-const CALENDAR_SECTION_ID = 'book-strategy-call';
 const DEFAULT_BOOKING_WIDGET =
   'https://api.leadconnectorhq.com/widget/booking/IRUVPTnnjfSdhvBguaB7';
 
@@ -63,14 +63,6 @@ const FEATURES = [
   },
 ] as const;
 
-const CALL_COVER = [
-  'Your current website and lead process',
-  'Missed-call and follow-up opportunities',
-  'Google review strategy',
-  'Recommended GrowthLabPro setup',
-  'Questions about pricing and implementation',
-] as const;
-
 const FAQS = [
   {
     question: 'Do I need a new website?',
@@ -102,10 +94,6 @@ const FAQS = [
       'No. GrowthLabPro provides tools and systems intended to improve lead response, follow-up, organization, and review generation, but results depend on many factors and cannot be guaranteed.',
   },
 ] as const;
-
-function scrollToCalendar() {
-  document.getElementById(CALENDAR_SECTION_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
 
 function SectionHeading({
   eyebrow,
@@ -276,57 +264,30 @@ function VslVideoPlayer() {
   );
 }
 
-function buildBookingUrl(base: string, fullName: string, phone: string) {
-  const url = new URL(base);
-  if (fullName) url.searchParams.set('full_name', fullName);
-  if (phone) {
-    url.searchParams.set('phone', phone);
-    url.searchParams.set('phone_number', phone);
-  }
-  return url.toString();
-}
-
-function BookingCalendar({ src, id }: { src: string; id: string }) {
-  return (
-    <div className="w-full overflow-hidden">
-      <iframe
-        id={id}
-        title="Schedule your GrowthLabPro strategy call"
-        src={src}
-        className="block min-h-[560px] w-full max-w-full border-0 sm:min-h-[640px]"
-        style={{ height: 720 }}
-        loading="eager"
-      />
-      <p className="mt-4 text-center text-sm text-neutral-600">
-        <a href={src} target="_blank" rel="noopener noreferrer" className="font-medium text-[#0A2540] underline hover:text-[#fbba2f]">
-          Open the calendar in a new tab
-        </a>{' '}
-        if it doesn&apos;t appear above.
-      </p>
-    </div>
-  );
-}
-
 function HighlightedHeadline() {
   return (
     <h1
-      className="font-[var(--headlinefont)] text-[28px] font-bold leading-[1.15] sm:text-4xl md:text-5xl"
+      className="font-[var(--headlinefont)] text-[28px] font-bold leading-[1.05] sm:text-4xl md:text-5xl"
       style={{ color: NAVY }}
     >
       Get More <span style={{ color: GOLD }}>Leads</span>, More{' '}
-      <span style={{ color: GOLD }}>5-Star Reviews</span>,
-      <br className="hidden sm:block" /> and More <span style={{ color: GOLD }}>Booked Jobs</span>
+      <span style={{ color: GOLD }}>5-Star Reviews</span>, and More{' '}
+      <span style={{ color: GOLD }}>Booked Jobs</span>
     </h1>
   );
 }
 
 export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigateHome }: Props) {
-  const bookingSrc = useMemo(() => {
-    const params = new URLSearchParams(window.location.search);
-    const fullName = params.get('full_name') ?? params.get('name') ?? '';
-    const phone = params.get('phone') ?? params.get('phone_number') ?? '';
-    const base = import.meta.env.VITE_BOOKING_WIDGET_URL || DEFAULT_BOOKING_WIDGET;
-    return buildBookingUrl(base, fullName, phone);
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+
+  const bookingWidgetBase = import.meta.env.VITE_BOOKING_WIDGET_URL || DEFAULT_BOOKING_WIDGET;
+
+  const openAssessment = useCallback(() => {
+    setIsAssessmentOpen(true);
+  }, []);
+
+  const closeAssessment = useCallback(() => {
+    setIsAssessmentOpen(false);
   }, []);
 
   useEffect(() => {
@@ -395,13 +356,20 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
         } as React.CSSProperties
       }
     >
-      <main className="mx-auto max-w-[1180px] px-4 pb-16 pt-8 font-[var(--contentfont)] sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
+      <main className="mx-auto max-w-[1180px] px-4 pb-16 pt-0 font-[var(--contentfont)] sm:px-6 sm:pb-20 lg:px-8">
         {/* Hero */}
-        <section className="mx-auto max-w-4xl text-center" aria-labelledby="hero-heading">
-          <p className="text-xs font-bold tracking-[0.16em] sm:text-sm" style={{ color: GOLD }}>
-            CONTRACTOR GROWTH SYSTEM
-          </p>
-          <div id="hero-heading" className="mt-4">
+        <section className="mx-auto -mt-2 max-w-4xl text-center sm:-mt-3" aria-labelledby="hero-heading">
+          <div className="flex justify-center leading-none">
+            <img
+              src="/images/logo.png"
+              alt="GrowthLabPro"
+              className="-mt-4 block h-36 w-auto object-contain object-top sm:-mt-6 sm:h-44"
+              width={440}
+              height={176}
+              decoding="async"
+            />
+          </div>
+          <div id="hero-heading" className="-mt-5 sm:-mt-7">
             <HighlightedHeadline />
           </div>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-lg">
@@ -434,8 +402,14 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
           </div>
         </section>
 
+        <div className="mt-10 flex justify-center sm:mt-12">
+          <CtaButton onClick={openAssessment} className="w-full max-w-md sm:w-auto">
+            Book Your Free Strategy Call
+          </CtaButton>
+        </div>
+
         {/* What's included */}
-        <section className="mt-14 sm:mt-16" aria-labelledby="included-heading">
+        <section className="mt-10 sm:mt-12" aria-labelledby="included-heading">
           <SectionHeading
             id="included-heading"
             title="Everything Included for $297/Month"
@@ -464,38 +438,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             Results vary by company, market, offer, and lead volume. No specific results are guaranteed.
           </p>
           <div className="mt-6 flex justify-center">
-            <CtaButton onClick={scrollToCalendar}>See How It Works</CtaButton>
-          </div>
-        </section>
-
-        {/* Booking intro + calendar */}
-        <section
-          id={CALENDAR_SECTION_ID}
-          className="mt-14 scroll-mt-6 sm:mt-16 sm:scroll-mt-8"
-          aria-labelledby="booking-step-heading"
-        >
-          <SectionHeading
-            id="booking-step-heading"
-            title="STEP 2: BOOK YOUR FREE STRATEGY CALL"
-            subtitle="Choose a time below and we’ll review your current setup, discuss where leads may be slipping through the cracks, and show you how the GrowthLabPro system could fit your business."
-          />
-
-          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)] lg:items-start lg:gap-8">
-            <aside className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6">
-              <h3 className="font-[var(--headlinefont)] text-lg font-bold text-[#0A2540]">What We&apos;ll Cover</h3>
-              <ul className="mt-4 space-y-3">
-                {CALL_COVER.map((item) => (
-                  <ChecklistItem key={item}>{item}</ChecklistItem>
-                ))}
-              </ul>
-              <p className="mt-5 rounded-xl bg-[#F7F8FA] px-3 py-3 text-sm leading-relaxed text-neutral-600">
-                No pressure and no obligation. The call is simply to see whether the system is a good fit.
-              </p>
-            </aside>
-
-            <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm sm:p-4">
-              <BookingCalendar src={bookingSrc} id="booking-calendar" />
-            </div>
+            <CtaButton onClick={openAssessment}>See How It Works</CtaButton>
           </div>
         </section>
 
@@ -520,7 +463,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             and book more work.
           </p>
           <div className="mt-7 flex justify-center">
-            <CtaButton onClick={scrollToCalendar}>Book My Free Strategy Call</CtaButton>
+            <CtaButton onClick={openAssessment}>Book My Free Strategy Call</CtaButton>
           </div>
         </section>
 
@@ -528,6 +471,12 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
           © Copyright GrowthLabPro 2026 | All Rights Reserved
         </footer>
       </main>
+
+      <QualificationAssessmentModal
+        isOpen={isAssessmentOpen}
+        onClose={closeAssessment}
+        bookingWidgetBase={bookingWidgetBase}
+      />
     </div>
   );
 }
