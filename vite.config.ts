@@ -74,17 +74,14 @@ function netlifyFunctionsDevPlugin(env: Record<string, string>): Plugin {
             console.info('[submit-contractor-quiz] Local quiz payload (CRM skipped)', {
               firstName: parsed.firstName ? '[set]' : '',
               phone: parsed.phone ? '[set]' : '',
-              contractorType: parsed.contractorType,
-              crewCount: parsed.crewCount,
               timeline: parsed.timeline,
-              marketingBudget: parsed.marketingBudget,
-              annualRevenue: parsed.annualRevenue,
+              monthlyRevenue: parsed.monthlyRevenue,
             });
             sendJson(200, {
               success: true,
               contactId: 'local-dev',
               warnings: [
-                'Local Vite mode: GoHighLevel save skipped (missing GHL_PRIVATE_INTEGRATION_TOKEN / GHL_LOCATION_ID). Calendar unlocked for testing.',
+                'Local Vite mode: GoHighLevel save skipped (missing GHL_PRIVATE_INTEGRATION_TOKEN / GHL_LOCATION_ID). Video unlocked for testing.',
               ],
             });
             return;

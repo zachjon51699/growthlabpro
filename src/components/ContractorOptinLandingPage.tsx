@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import {
   Check,
   ChevronDown,
   Globe,
   MessageSquare,
+  Play,
   Star,
   RefreshCw,
   FolderKanban,
@@ -13,6 +14,7 @@ import QualificationAssessmentModal from './QualificationAssessmentModal';
 
 const VSL_VIDEO_SRC = '/videos/how-contractors-get-more-free-leads.mp4';
 const CANONICAL_PATH = '/contractor-optin';
+const VIDEO_UNLOCK_STORAGE_KEY = 'glp-contractor-optin-video-unlocked';
 const DEFAULT_BOOKING_WIDGET =
   'https://api.leadconnectorhq.com/widget/booking/IRUVPTnnjfSdhvBguaB7';
 
@@ -249,10 +251,63 @@ function FaqAccordion({ items }: { items: readonly { question: string; answer: s
   );
 }
 
-function VslVideoPlayer() {
+function VslVideoPlayer({
+  unlocked,
+  onRequestUnlock,
+}: {
+  unlocked: boolean;
+  onRequestUnlock: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!unlocked) return;
+    const video = videoRef.current;
+    if (!video) return;
+    void video.play().catch(() => {
+      // Autoplay may be blocked until the user taps play.
+    });
+  }, [unlocked]);
+
+  if (!unlocked) {
+    return (
+      <div
+        className="relative w-full overflow-hidden rounded-xl bg-[#0A2540] shadow-md"
+        style={{ padding: '56.25% 0 0' }}
+      >
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-[#0A2540] via-[#123456] to-[#0A2540] px-6 text-center">
+          <button
+            type="button"
+            onClick={onRequestUnlock}
+            className="flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:h-20 sm:w-20"
+            style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
+            aria-label="Unlock the demo video"
+          >
+            <Play className="ml-1 h-8 w-8 fill-current sm:h-9 sm:w-9" />
+          </button>
+          <div>
+            <p className="text-lg font-bold text-white sm:text-xl">Watch the 3-Minute Demo</p>
+            <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80 sm:text-base">
+              Answer a few quick questions to unlock the video.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onRequestUnlock}
+            className="rounded-xl px-6 py-3 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:text-base"
+            style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
+          >
+            Unlock Video
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative w-full overflow-hidden rounded-xl bg-black shadow-md" style={{ padding: '56.25% 0 0' }}>
       <video
+        ref={videoRef}
         className="absolute inset-0 h-full w-full"
         src={VSL_VIDEO_SRC}
         controls
@@ -279,6 +334,13 @@ function HighlightedHeadline() {
 
 export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigateHome }: Props) {
   const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
+  const [videoUnlocked, setVideoUnlocked] = useState(() => {
+    try {
+      return sessionStorage.getItem(VIDEO_UNLOCK_STORAGE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
 
   const bookingWidgetBase = import.meta.env.VITE_BOOKING_WIDGET_URL || DEFAULT_BOOKING_WIDGET;
 
@@ -288,6 +350,15 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
 
   const closeAssessment = useCallback(() => {
     setIsAssessmentOpen(false);
+  }, []);
+
+  const handleQualified = useCallback(() => {
+    setVideoUnlocked(true);
+    try {
+      sessionStorage.setItem(VIDEO_UNLOCK_STORAGE_KEY, '1');
+    } catch {
+      // Ignore storage failures (private mode, etc.)
+    }
   }, []);
 
   useEffect(() => {
@@ -385,10 +456,10 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
               id="demo-step-heading"
               className="inline-flex items-center rounded-full border border-[#fbba2f]/40 bg-white px-4 py-1.5 text-xs font-bold tracking-wide text-[#0A2540] shadow-sm sm:text-sm"
             >
-              STEP 1: WATCH THE 3-MINUTE DEMO
+              {videoUnlocked ? 'STEP 1: WATCH THE 3-MINUTE DEMO' : 'STEP 1: UNLOCK THE 3-MINUTE DEMO'}
             </p>
           </div>
-          <VslVideoPlayer />
+          <VslVideoPlayer unlocked={videoUnlocked} onRequestUnlock={openAssessment} />
 
           <div className="mt-8 sm:mt-10">
             <h2 className="text-center font-[var(--headlinefont)] text-xl font-bold text-[#0A2540] sm:text-2xl">
@@ -475,6 +546,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
       <QualificationAssessmentModal
         isOpen={isAssessmentOpen}
         onClose={closeAssessment}
+        onQualified={handleQualified}
         bookingWidgetBase={bookingWidgetBase}
       />
     </div>

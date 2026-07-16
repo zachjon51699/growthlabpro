@@ -3,11 +3,8 @@ const GHL_API_BASE = 'https://services.leadconnectorhq.com';
 const GHL_API_VERSION = '2021-07-28';
 
 const CUSTOM_FIELD_MAP = [
-  { quizKey: 'contractorType', fieldName: 'Contractor Type' },
-  { quizKey: 'crewCount', fieldName: 'Number of Crews' },
   { quizKey: 'timeline', fieldName: 'Timeline' },
-  { quizKey: 'marketingBudget', fieldName: 'Marketing Budget' },
-  { quizKey: 'annualRevenue', fieldName: 'Annual Revenue' },
+  { quizKey: 'monthlyRevenue', fieldName: 'Current Monthly Revenue' },
 ];
 
 const corsHeaders = {
@@ -57,11 +54,8 @@ function buildQuizNote(data) {
   return [
     'Website Quiz Completed',
     '',
-    `Contractor Type: ${data.contractorType || '—'}`,
-    `Number of Crews: ${data.crewCount || '—'}`,
     `Timeline: ${data.timeline || '—'}`,
-    `Marketing Budget: ${data.marketingBudget || '—'}`,
-    `Annual Revenue: ${data.annualRevenue || '—'}`,
+    `Current Monthly Revenue: ${data.monthlyRevenue || '—'}`,
     '',
     `UTM Source: ${data.utm_source || '—'}`,
     `UTM Medium: ${data.utm_medium || '—'}`,
@@ -106,11 +100,8 @@ function validatePayload(raw) {
     firstName: sanitizeString(raw.firstName, 80),
     email: sanitizeString(raw.email, 120).toLowerCase(),
     phone: sanitizeString(raw.phone, 40),
-    contractorType: sanitizeString(raw.contractorType, 80),
-    crewCount: sanitizeString(raw.crewCount, 80),
     timeline: sanitizeString(raw.timeline, 80),
-    marketingBudget: sanitizeString(raw.marketingBudget, 80),
-    annualRevenue: sanitizeString(raw.annualRevenue, 80),
+    monthlyRevenue: sanitizeString(raw.monthlyRevenue, 80),
     utm_source: sanitizeString(raw.utm_source, 120),
     utm_medium: sanitizeString(raw.utm_medium, 120),
     utm_campaign: sanitizeString(raw.utm_campaign, 120),
@@ -123,6 +114,9 @@ function validatePayload(raw) {
   }
   if (!isValidPhone(data.phone)) {
     return { error: 'A valid phone number is required.' };
+  }
+  if (!data.timeline) {
+    return { error: 'Please tell us how soon you want more jobs.' };
   }
   if (data.email && !isValidEmail(data.email)) {
     return { error: 'A valid email address is required.' };
@@ -198,7 +192,7 @@ exports.handler = async (event) => {
           key: field.fieldKey || field.key,
           field_value: value,
         });
-      } else {
+      } else if (value) {
         missingFieldNames.push(mapping.fieldName);
       }
     }

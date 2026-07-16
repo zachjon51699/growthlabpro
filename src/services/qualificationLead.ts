@@ -1,11 +1,8 @@
 export type QualificationAnswers = {
-  contractorType: string;
-  crewCount: string;
-  timeline: string;
-  marketingBudget: string;
-  annualRevenue: string;
   firstName: string;
   phone: string;
+  timeline: string;
+  monthlyRevenue: string;
 };
 
 export type AttributionParams = {
@@ -60,11 +57,8 @@ export async function submitContractorQuiz(
       body: JSON.stringify({
         firstName: answers.firstName.trim(),
         phone: answers.phone.trim(),
-        contractorType: answers.contractorType,
-        crewCount: answers.crewCount,
         timeline: answers.timeline,
-        marketingBudget: answers.marketingBudget,
-        annualRevenue: answers.annualRevenue,
+        monthlyRevenue: answers.monthlyRevenue,
         ...attrs,
       }),
       signal: controller.signal,

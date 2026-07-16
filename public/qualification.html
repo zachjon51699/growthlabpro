@@ -6,21 +6,16 @@
   </head>
   <body>
     <!--
-      Static form so Netlify detects and enables the "qualification" form at build time.
-      Submissions are POSTed from the React app; notifications should be set to contact@growthlabpro.com
-      in the Netlify dashboard (Forms → qualification → Form notifications).
+      Legacy Netlify Forms detection form (kept for build-time form registration).
+      Live quiz submissions go through /.netlify/functions/submit-contractor-quiz → GoHighLevel.
     -->
     <form name="qualification" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="qualification" />
       <input name="bot-field" />
       <input name="firstName" />
       <input name="phone" />
-      <input name="workType" />
-      <input name="crewCount" />
       <input name="timeline" />
-      <input name="marketingSpend" />
-      <input name="annualRevenue" />
-      <textarea name="summary"></textarea>
+      <input name="monthlyRevenue" />
     </form>
   </body>
 </html>

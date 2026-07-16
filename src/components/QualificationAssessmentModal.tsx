@@ -14,23 +14,18 @@ const GOLD = 'rgb(212, 175, 55)';
 const NAVY = '#0A2540';
 
 const EMPTY_ANSWERS: QualificationAnswers = {
-  contractorType: '',
-  crewCount: '',
-  timeline: '',
-  marketingBudget: '',
-  annualRevenue: '',
   firstName: '',
   phone: '',
+  timeline: '',
+  monthlyRevenue: '',
 };
 
 type ChoiceStep = {
   kind: 'choice';
-  key: keyof Pick<
-    QualificationAnswers,
-    'contractorType' | 'crewCount' | 'timeline' | 'marketingBudget' | 'annualRevenue'
-  >;
+  key: keyof Pick<QualificationAnswers, 'timeline' | 'monthlyRevenue'>;
   question: string;
   options: readonly string[];
+  required: boolean;
 };
 
 type TextStep = {
@@ -40,39 +35,10 @@ type TextStep = {
   placeholder: string;
   inputType: 'text' | 'tel';
   autoComplete: string;
+  required: boolean;
 };
 
 const STEPS: readonly (ChoiceStep | TextStep)[] = [
-  {
-    kind: 'choice',
-    key: 'contractorType',
-    question: 'What type of contracting work do you do?',
-    options: ['Residential', 'Commercial', 'Both Residential & Commercial', "I'm Not a Contractor"],
-  },
-  {
-    kind: 'choice',
-    key: 'crewCount',
-    question: 'How many crews do you have?',
-    options: ['Just Me', '1 Crew', '2–3 Crews', '4–6 Crews', '6+ Crews'],
-  },
-  {
-    kind: 'choice',
-    key: 'timeline',
-    question: 'How soon do you want more jobs?',
-    options: ['ASAP', 'Next 1–3 Months', 'Just Researching'],
-  },
-  {
-    kind: 'choice',
-    key: 'marketingBudget',
-    question: 'How much do you spend on marketing each month?',
-    options: ['Less than $500', '$500–$1,000', '$1k–$3k', '$3k–$6k', '$6k+'],
-  },
-  {
-    kind: 'choice',
-    key: 'annualRevenue',
-    question: 'Approximate annual revenue',
-    options: ['Under $250k', '$250k–$1M', '$1M–$5M', '$5M+'],
-  },
   {
     kind: 'text',
     key: 'firstName',
@@ -80,6 +46,7 @@ const STEPS: readonly (ChoiceStep | TextStep)[] = [
     placeholder: 'Your first name',
     inputType: 'text',
     autoComplete: 'given-name',
+    required: true,
   },
   {
     kind: 'text',
@@ -88,6 +55,21 @@ const STEPS: readonly (ChoiceStep | TextStep)[] = [
     placeholder: '(555) 123-4567',
     inputType: 'tel',
     autoComplete: 'tel-national',
+    required: true,
+  },
+  {
+    kind: 'choice',
+    key: 'timeline',
+    question: 'How soon do you want more jobs?',
+    options: ['ASAP', 'Within 30 Days', '1–3 Months', 'Just Researching'],
+    required: true,
+  },
+  {
+    kind: 'choice',
+    key: 'monthlyRevenue',
+    question: 'Current Monthly Revenue',
+    options: ['Under $10k', '$10k–25k', '$25k–100k', '$100k+'],
+    required: false,
   },
 ] as const;
 
@@ -119,10 +101,16 @@ function buildBookingUrl(base: string, answers: QualificationAnswers) {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  onQualified?: () => void;
   bookingWidgetBase: string;
 };
 
-export default function QualificationAssessmentModal({ isOpen, onClose, bookingWidgetBase }: Props) {
+export default function QualificationAssessmentModal({
+  isOpen,
+  onClose,
+  onQualified,
+  bookingWidgetBase,
+}: Props) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [stepIndex, setStepIndex] = useState(0);
@@ -201,7 +189,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
     if (!currentStep) return false;
 
     if (currentStep.kind === 'choice') {
-      if (!answers[currentStep.key]) {
+      if (currentStep.required && !answers[currentStep.key]) {
         setError('Please select an option to continue.');
         return false;
       }
@@ -209,7 +197,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
     }
 
     const value = answers[currentStep.key].trim();
-    if (!value) {
+    if (currentStep.required && !value) {
       setError('This field is required.');
       return false;
     }
@@ -235,6 +223,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
     }
 
     trackMetaLead({ content_name: 'contractor-optin-qualification' });
+    onQualified?.();
     setCompleted(true);
   };
 
@@ -274,6 +263,14 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
         ? 'Almost there'
         : `Question ${stepIndex + 1} of ${TOTAL_STEPS}`;
 
+  const nextLabel = isSubmitting
+    ? 'Saving…'
+    : stepIndex === TOTAL_STEPS - 1
+      ? 'Unlock Video'
+      : currentStep.kind === 'choice' && !currentStep.required && !answers[currentStep.key]
+        ? 'Skip'
+        : 'Next';
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center p-3 sm:items-center sm:p-6"
@@ -303,7 +300,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
         <div className="flex items-start justify-between gap-3 border-b border-neutral-100 px-4 py-3 sm:px-5">
           <div>
             <p className="text-xs font-bold tracking-[0.12em]" style={{ color: GOLD }}>
-              QUALIFICATION ASSESSMENT
+              QUICK QUESTIONS
             </p>
             <h2 id={titleId} className="mt-0.5 text-base font-bold sm:text-lg" style={{ color: NAVY }}>
               {headerLabel}
@@ -325,13 +322,10 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
             <div className="qualification-step-enter">
               <div className="text-center">
                 <p className="font-[inherit] text-2xl font-bold sm:text-3xl" style={{ color: NAVY }}>
-                  You&apos;re Qualified!
+                  You&apos;re in!
                 </p>
                 <p className="mt-2 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                  Based on your answers, it looks like GrowthLabPro could be a great fit.
-                </p>
-                <p className="mt-2 text-sm font-semibold text-neutral-700 sm:text-base">
-                  Schedule your free strategy session below.
+                  The demo video is unlocked. While you&apos;re here, grab a free strategy call time.
                 </p>
               </div>
               <div className="mt-5 overflow-hidden rounded-xl border border-neutral-200 bg-white">
@@ -378,6 +372,9 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
             >
               <h3 className="text-xl font-bold leading-snug sm:text-2xl" style={{ color: NAVY }}>
                 {currentStep.question}
+                {!currentStep.required ? (
+                  <span className="ml-2 text-sm font-semibold text-neutral-400">(optional)</span>
+                ) : null}
               </h3>
 
               {currentStep.kind === 'choice' ? (
@@ -468,7 +465,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
               className="rounded-xl px-5 py-2.5 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 sm:text-base"
               style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
             >
-              Done
+              Watch Demo
             </button>
           ) : submitError ? (
             <button
@@ -488,7 +485,7 @@ export default function QualificationAssessmentModal({ isOpen, onClose, bookingW
               className="rounded-xl px-5 py-2.5 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:px-6 sm:text-base"
               style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
             >
-              {isSubmitting ? 'Saving…' : stepIndex === TOTAL_STEPS - 1 ? 'See Calendar' : 'Next'}
+              {nextLabel}
             </button>
           )}
         </div>
