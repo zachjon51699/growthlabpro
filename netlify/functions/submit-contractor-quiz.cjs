@@ -4,8 +4,11 @@ const GHL_API_BASE = 'https://services.leadconnectorhq.com';
 const GHL_API_VERSION = '2021-07-28';
 
 const CUSTOM_FIELD_MAP = [
-  { quizKey: 'timeline', fieldName: 'Timeline' },
-  { quizKey: 'monthlyRevenue', fieldName: 'Current Monthly Revenue' },
+  { quizKey: 'timeline', fieldNames: ['Timeline', 'How soon do you want more jobs?'] },
+  {
+    quizKey: 'monthlyRevenue',
+    fieldNames: ['Current Monthly Revenue', 'Monthly Revenue', 'Current Monthly revenue'],
+  },
 ];
 
 const corsHeaders = {
@@ -185,16 +188,26 @@ exports.handler = async (event) => {
     const missingFieldNames = [];
 
     for (const mapping of CUSTOM_FIELD_MAP) {
-      const field = byName.get(normalizeFieldName(mapping.fieldName));
       const value = data[mapping.quizKey];
-      if (field?.id && value) {
+      if (!value) continue;
+
+      let matched = null;
+      for (const fieldName of mapping.fieldNames) {
+        const field = byName.get(normalizeFieldName(fieldName));
+        if (field?.id) {
+          matched = field;
+          break;
+        }
+      }
+
+      if (matched?.id) {
+        // GHL upsert expects id + field_value (key is optional and can break some accounts).
         mappedCustomFields.push({
-          id: field.id,
-          key: field.fieldKey || field.key,
+          id: matched.id,
           field_value: value,
         });
-      } else if (value) {
-        missingFieldNames.push(mapping.fieldName);
+      } else {
+        missingFieldNames.push(mapping.fieldNames[0]);
       }
     }
 
@@ -247,19 +260,18 @@ exports.handler = async (event) => {
       });
     }
 
-    // 3) Fallback note when any mapped custom fields are missing (or always include quiz summary)
-    if (missingFieldNames.length > 0 || mappedCustomFields.length === 0) {
-      const noteRes = await ghlFetch(`/contacts/${contactId}/notes`, {
-        method: 'POST',
-        token,
-        body: { body: buildQuizNote(data) },
+    // 3) Always save a quiz summary note so answers are visible even without custom fields
+    const noteRes = await ghlFetch(`/contacts/${contactId}/notes`, {
+      method: 'POST',
+      token,
+      body: { body: buildQuizNote(data) },
+    });
+    if (!noteRes.ok) {
+      console.warn('[submit-contractor-quiz] Failed to create quiz note', {
+        status: noteRes.status,
+        body: noteRes.body,
       });
-      if (!noteRes.ok) {
-        console.warn('[submit-contractor-quiz] Failed to create fallback note', {
-          status: noteRes.status,
-        });
-        warnings.push('Could not save quiz answers note on the contact.');
-      }
+      warnings.push('Could not save quiz answers note on the contact.');
     }
 
     // 4) Add tag without overwriting existing tags
