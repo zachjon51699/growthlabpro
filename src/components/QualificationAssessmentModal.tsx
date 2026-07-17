@@ -103,6 +103,8 @@ type Props = {
   onClose: () => void;
   onQualified?: () => void;
   bookingWidgetBase: string;
+  /** When true, the quiz cannot be dismissed until answers are saved. */
+  requireCompletion?: boolean;
 };
 
 export default function QualificationAssessmentModal({
@@ -110,6 +112,7 @@ export default function QualificationAssessmentModal({
   onClose,
   onQualified,
   bookingWidgetBase,
+  requireCompletion = false,
 }: Props) {
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -122,6 +125,8 @@ export default function QualificationAssessmentModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const [animKey, setAnimKey] = useState(0);
+
+  const canDismiss = completed || !requireCompletion;
 
   const bookingSrc = useMemo(
     () => (completed ? buildBookingUrl(bookingWidgetBase, answers) : ''),
@@ -146,11 +151,6 @@ export default function QualificationAssessmentModal({
   useEffect(() => {
     if (!isOpen) return;
     setAttribution(getAttributionFromLocation());
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prev;
-    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -162,11 +162,11 @@ export default function QualificationAssessmentModal({
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && canDismiss) onClose();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, canDismiss]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -178,6 +178,11 @@ export default function QualificationAssessmentModal({
     }, 50);
     return () => window.clearTimeout(t);
   }, [isOpen, stepIndex, completed, submitError, isSubmitting]);
+
+  const requestClose = () => {
+    if (!canDismiss) return;
+    onClose();
+  };
 
   const setAnswerValue = (key: keyof QualificationAnswers, value: string) => {
     setAnswers((prev) => ({ ...prev, [key]: value }));
@@ -266,7 +271,7 @@ export default function QualificationAssessmentModal({
   const nextLabel = isSubmitting
     ? 'Saving…'
     : stepIndex === TOTAL_STEPS - 1
-      ? 'Unlock Video'
+      ? 'Continue'
       : currentStep.kind === 'choice' && !currentStep.required && !answers[currentStep.key]
         ? 'Skip'
         : 'Next';
@@ -281,9 +286,10 @@ export default function QualificationAssessmentModal({
       <button
         type="button"
         className="absolute inset-0 bg-black/55 transition-opacity"
-        onClick={onClose}
-        aria-label="Close qualification assessment"
+        onClick={requestClose}
+        aria-label={canDismiss ? 'Close qualification assessment' : undefined}
         tabIndex={-1}
+        disabled={!canDismiss}
       />
 
       <div
@@ -306,15 +312,19 @@ export default function QualificationAssessmentModal({
               {headerLabel}
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-2 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-            style={{ ['--tw-ring-color' as string]: GOLD }}
-            aria-label="Close"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          {canDismiss ? (
+            <button
+              type="button"
+              onClick={requestClose}
+              className="rounded-lg p-2 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+              style={{ ['--tw-ring-color' as string]: GOLD }}
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          ) : (
+            <span className="h-9 w-9" aria-hidden />
+          )}
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
@@ -325,7 +335,7 @@ export default function QualificationAssessmentModal({
                   You&apos;re in!
                 </p>
                 <p className="mt-2 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                  The demo video is unlocked. While you&apos;re here, grab a free strategy call time.
+                  The demo is ready to watch. While you&apos;re here, grab a free strategy call time.
                 </p>
               </div>
               <div className="mt-5 overflow-hidden rounded-xl border border-neutral-200 bg-white">
@@ -461,7 +471,7 @@ export default function QualificationAssessmentModal({
           {completed ? (
             <button
               type="button"
-              onClick={onClose}
+              onClick={requestClose}
               className="rounded-xl px-5 py-2.5 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 sm:text-base"
               style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
             >

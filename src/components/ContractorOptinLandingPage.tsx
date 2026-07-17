@@ -253,56 +253,41 @@ function FaqAccordion({ items }: { items: readonly { question: string; answer: s
 
 function VslVideoPlayer({
   unlocked,
-  onRequestUnlock,
+  onRequestAccess,
 }: {
   unlocked: boolean;
-  onRequestUnlock: () => void;
+  onRequestAccess: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (!unlocked) return;
     const video = videoRef.current;
     if (!video) return;
+
+    if (!unlocked) {
+      video.pause();
+      video.currentTime = 0;
+      return;
+    }
+
     void video.play().catch(() => {
       // Autoplay may be blocked until the user taps play.
     });
   }, [unlocked]);
 
-  if (!unlocked) {
-    return (
-      <div
-        className="relative w-full overflow-hidden rounded-xl bg-[#0A2540] shadow-md"
-        style={{ padding: '56.25% 0 0' }}
-      >
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-[#0A2540] via-[#123456] to-[#0A2540] px-6 text-center">
-          <button
-            type="button"
-            onClick={onRequestUnlock}
-            className="flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition hover:scale-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:h-20 sm:w-20"
-            style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
-            aria-label="Unlock the demo video"
-          >
-            <Play className="ml-1 h-8 w-8 fill-current sm:h-9 sm:w-9" />
-          </button>
-          <div>
-            <p className="text-lg font-bold text-white sm:text-xl">Watch the 3-Minute Demo</p>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80 sm:text-base">
-              Answer a few quick questions to unlock the video.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onRequestUnlock}
-            className="rounded-xl px-6 py-3 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:text-base"
-            style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
-          >
-            Unlock Video
-          </button>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || unlocked) return;
+
+    const blockPlayback = () => {
+      video.pause();
+      if (video.currentTime > 0.1) video.currentTime = 0;
+      onRequestAccess();
+    };
+
+    video.addEventListener('play', blockPlayback);
+    return () => video.removeEventListener('play', blockPlayback);
+  }, [unlocked, onRequestAccess]);
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl bg-black shadow-md" style={{ padding: '56.25% 0 0' }}>
@@ -310,11 +295,28 @@ function VslVideoPlayer({
         ref={videoRef}
         className="absolute inset-0 h-full w-full"
         src={VSL_VIDEO_SRC}
-        controls
+        controls={unlocked}
         playsInline
         preload="metadata"
         title="How Contractors Get More Free Leads"
       />
+
+      {!unlocked ? (
+        <button
+          type="button"
+          onClick={onRequestAccess}
+          className="absolute inset-0 flex items-center justify-center bg-black/25 transition hover:bg-black/35 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset"
+          style={{ ['--tw-ring-color' as string]: GOLD }}
+          aria-label="Play demo video"
+        >
+          <span
+            className="flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition hover:scale-105 sm:h-20 sm:w-20"
+            style={{ backgroundColor: GOLD, color: NAVY }}
+          >
+            <Play className="ml-1 h-8 w-8 fill-current sm:h-9 sm:w-9" />
+          </span>
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -332,15 +334,17 @@ function HighlightedHeadline() {
   );
 }
 
+function readVideoUnlocked(): boolean {
+  try {
+    return sessionStorage.getItem(VIDEO_UNLOCK_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigateHome }: Props) {
-  const [isAssessmentOpen, setIsAssessmentOpen] = useState(false);
-  const [videoUnlocked, setVideoUnlocked] = useState(() => {
-    try {
-      return sessionStorage.getItem(VIDEO_UNLOCK_STORAGE_KEY) === '1';
-    } catch {
-      return false;
-    }
-  });
+  const [videoUnlocked, setVideoUnlocked] = useState(readVideoUnlocked);
+  const [isAssessmentOpen, setIsAssessmentOpen] = useState(() => !readVideoUnlocked());
 
   const bookingWidgetBase = import.meta.env.VITE_BOOKING_WIDGET_URL || DEFAULT_BOOKING_WIDGET;
 
@@ -360,6 +364,27 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
       // Ignore storage failures (private mode, etc.)
     }
   }, []);
+
+  // Lock page scroll until the visitor completes the quiz (and while the modal is open).
+  useEffect(() => {
+    const shouldLock = !videoUnlocked || isAssessmentOpen;
+    if (!shouldLock) return;
+
+    const prevOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+    };
+  }, [videoUnlocked, isAssessmentOpen]);
+
+  // If somehow closed before completion, reopen immediately.
+  useEffect(() => {
+    if (videoUnlocked || isAssessmentOpen) return;
+    setIsAssessmentOpen(true);
+  }, [videoUnlocked, isAssessmentOpen]);
 
   useEffect(() => {
     document.title = 'Contractor Growth System | GrowthLabPro';
@@ -456,10 +481,10 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
               id="demo-step-heading"
               className="inline-flex items-center rounded-full border border-[#fbba2f]/40 bg-white px-4 py-1.5 text-xs font-bold tracking-wide text-[#0A2540] shadow-sm sm:text-sm"
             >
-              {videoUnlocked ? 'STEP 1: WATCH THE 3-MINUTE DEMO' : 'STEP 1: UNLOCK THE 3-MINUTE DEMO'}
+              STEP 1: WATCH THE 3-MINUTE DEMO
             </p>
           </div>
-          <VslVideoPlayer unlocked={videoUnlocked} onRequestUnlock={openAssessment} />
+          <VslVideoPlayer unlocked={videoUnlocked} onRequestAccess={openAssessment} />
 
           <div className="mt-8 sm:mt-10">
             <h2 className="text-center font-[var(--headlinefont)] text-xl font-bold text-[#0A2540] sm:text-2xl">
@@ -548,6 +573,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
         onClose={closeAssessment}
         onQualified={handleQualified}
         bookingWidgetBase={bookingWidgetBase}
+        requireCompletion={!videoUnlocked}
       />
     </div>
   );
