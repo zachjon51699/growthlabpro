@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import {
   getAttributionFromLocation,
@@ -86,23 +86,10 @@ function isValidPhone(phone: string) {
   return phone.replace(/\D/g, '').length === 10;
 }
 
-function buildBookingUrl(base: string, answers: QualificationAnswers) {
-  const url = new URL(base);
-  if (answers.firstName) url.searchParams.set('full_name', answers.firstName.trim());
-  const phoneDigits = answers.phone.replace(/\D/g, '');
-  if (phoneDigits) {
-    const e164 = `+1${phoneDigits}`;
-    url.searchParams.set('phone', e164);
-    url.searchParams.set('phone_number', e164);
-  }
-  return url.toString();
-}
-
 type Props = {
   isOpen: boolean;
   onClose: () => void;
   onQualified?: () => void;
-  bookingWidgetBase: string;
   /** When true, the quiz cannot be dismissed until answers are saved. */
   requireCompletion?: boolean;
 };
@@ -111,7 +98,6 @@ export default function QualificationAssessmentModal({
   isOpen,
   onClose,
   onQualified,
-  bookingWidgetBase,
   requireCompletion = false,
 }: Props) {
   const titleId = useId();
@@ -127,11 +113,6 @@ export default function QualificationAssessmentModal({
   const [animKey, setAnimKey] = useState(0);
 
   const canDismiss = completed || !requireCompletion;
-
-  const bookingSrc = useMemo(
-    () => (completed ? buildBookingUrl(bookingWidgetBase, answers) : ''),
-    [completed, bookingWidgetBase, answers],
-  );
 
   const progress = completed ? 100 : ((stepIndex + 1) / TOTAL_STEPS) * 100;
   const currentStep = STEPS[stepIndex];
@@ -228,8 +209,8 @@ export default function QualificationAssessmentModal({
     }
 
     trackMetaLead({ content_name: 'contractor-optin-qualification' });
-    onQualified?.();
     setCompleted(true);
+    onQualified?.();
   };
 
   const goNext = async () => {
@@ -261,7 +242,7 @@ export default function QualificationAssessmentModal({
   if (!isOpen) return null;
 
   const headerLabel = completed
-    ? 'Schedule your call'
+    ? "You're in"
     : isSubmitting
       ? 'Saving…'
       : submitError
@@ -329,37 +310,13 @@ export default function QualificationAssessmentModal({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6 sm:py-6">
           {completed ? (
-            <div className="qualification-step-enter">
-              <div className="text-center">
-                <p className="font-[inherit] text-2xl font-bold sm:text-3xl" style={{ color: NAVY }}>
-                  You&apos;re in!
-                </p>
-                <p className="mt-2 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                  The demo is ready to watch. While you&apos;re here, grab a free strategy call time.
-                </p>
-              </div>
-              <div className="mt-5 overflow-hidden rounded-xl border border-neutral-200 bg-white">
-                <iframe
-                  id="qualification-booking-calendar"
-                  title="Schedule your GrowthLabPro strategy call"
-                  src={bookingSrc}
-                  className="block min-h-[480px] w-full border-0 sm:min-h-[560px]"
-                  style={{ height: 640 }}
-                  loading="eager"
-                />
-                <p className="border-t border-neutral-100 px-3 py-3 text-center text-sm text-neutral-600">
-                  <a
-                    href={bookingSrc}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium underline hover:opacity-80"
-                    style={{ color: NAVY }}
-                  >
-                    Open the calendar in a new tab
-                  </a>{' '}
-                  if it doesn&apos;t appear above.
-                </p>
-              </div>
+            <div className="qualification-step-enter text-center">
+              <p className="font-[inherit] text-2xl font-bold sm:text-3xl" style={{ color: NAVY }}>
+                You&apos;re in!
+              </p>
+              <p className="mt-2 text-base leading-relaxed text-neutral-600 sm:text-lg">
+                The demo is ready to watch, and you can book your free strategy call below.
+              </p>
             </div>
           ) : isSubmitting ? (
             <div className="flex min-h-[180px] flex-col items-center justify-center text-center">
@@ -475,7 +432,7 @@ export default function QualificationAssessmentModal({
               className="rounded-xl px-5 py-2.5 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 sm:text-base"
               style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
             >
-              Watch Demo
+              View Calendar
             </button>
           ) : submitError ? (
             <button

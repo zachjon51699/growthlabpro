@@ -15,6 +15,7 @@ import QualificationAssessmentModal from './QualificationAssessmentModal';
 const VSL_VIDEO_SRC = '/videos/how-contractors-get-more-free-leads.mp4';
 const CANONICAL_PATH = '/contractor-optin';
 const VIDEO_UNLOCK_STORAGE_KEY = 'glp-contractor-optin-video-unlocked';
+const BOOKING_SECTION_ID = 'book-call';
 const DEFAULT_BOOKING_WIDGET =
   'https://api.leadconnectorhq.com/widget/booking/IRUVPTnnjfSdhvBguaB7';
 
@@ -187,8 +188,11 @@ function CtaButton({
     return (
       <a
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+        onClick={(e) => {
+          if (!onClick) return;
+          e.preventDefault();
+          onClick();
+        }}
         className={`${base} ${styles} ${className}`}
       >
         {children}
@@ -200,6 +204,21 @@ function CtaButton({
     <button type="button" onClick={onClick} className={`${base} ${styles} ${className}`}>
       {children}
     </button>
+  );
+}
+
+function BookingCalendar({ src }: { src: string }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm">
+      <iframe
+        id="landing-booking-calendar"
+        title="Schedule your GrowthLabPro strategy call"
+        src={src}
+        className="block min-h-[560px] w-full border-0 sm:min-h-[640px]"
+        style={{ height: 720 }}
+        loading="lazy"
+      />
+    </div>
   );
 }
 
@@ -360,8 +379,20 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
     setIsAssessmentOpen(true);
   }, []);
 
+  const scrollToCalendar = useCallback(() => {
+    const el = document.getElementById(BOOKING_SECTION_ID);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   const closeAssessment = useCallback(() => {
     setIsAssessmentOpen(false);
+    // After quiz completion, land on the on-page calendar.
+    if (readVideoUnlocked()) {
+      window.setTimeout(() => {
+        document.getElementById(BOOKING_SECTION_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
   }, []);
 
   const handleQualified = useCallback(() => {
@@ -506,11 +537,30 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
           </div>
         </section>
 
-        <div className="mt-10 flex justify-center sm:mt-12">
-          <CtaButton href={bookingWidgetBase} className="w-full max-w-md sm:w-auto">
-            Book Your Free Strategy Call
-          </CtaButton>
-        </div>
+        {/* Booking calendar */}
+        <section
+          id={BOOKING_SECTION_ID}
+          className="mx-auto mt-12 max-w-[900px] scroll-mt-6 sm:mt-14"
+          aria-labelledby="booking-step-heading"
+        >
+          <div className="mb-4 flex justify-center">
+            <p
+              id="booking-step-heading"
+              className="inline-flex items-center rounded-full border border-[#fbba2f]/40 bg-white px-4 py-1.5 text-xs font-bold tracking-wide text-[#0A2540] shadow-sm sm:text-sm"
+            >
+              STEP 2: BOOK YOUR FREE STRATEGY CALL
+            </p>
+          </div>
+          <h2 className="text-center font-[var(--headlinefont)] text-xl font-bold text-[#0A2540] sm:text-2xl">
+            Choose a Time That Works for You
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-neutral-600 sm:text-base">
+            Pick a slot below and we&apos;ll walk through how GrowthLabPro can help you book more jobs.
+          </p>
+          <div className="mt-6">
+            <BookingCalendar src={bookingWidgetBase} />
+          </div>
+        </section>
 
         {/* What's included */}
         <section className="mt-10 sm:mt-12" aria-labelledby="included-heading">
@@ -542,7 +592,9 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             Results vary by company, market, offer, and lead volume. No specific results are guaranteed.
           </p>
           <div className="mt-6 flex justify-center">
-            <CtaButton href={bookingWidgetBase}>See How It Works</CtaButton>
+            <CtaButton href={`#${BOOKING_SECTION_ID}`} onClick={scrollToCalendar}>
+              See How It Works
+            </CtaButton>
           </div>
         </section>
 
@@ -567,7 +619,9 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             and book more work.
           </p>
           <div className="mt-7 flex justify-center">
-            <CtaButton href={bookingWidgetBase}>Book My Free Strategy Call</CtaButton>
+            <CtaButton href={`#${BOOKING_SECTION_ID}`} onClick={scrollToCalendar}>
+              Book My Free Strategy Call
+            </CtaButton>
           </div>
         </section>
 
@@ -580,7 +634,6 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
         isOpen={isAssessmentOpen}
         onClose={closeAssessment}
         onQualified={handleQualified}
-        bookingWidgetBase={bookingWidgetBase}
         requireCompletion={!videoUnlocked}
       />
     </div>
