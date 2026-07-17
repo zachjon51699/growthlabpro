@@ -88,9 +88,9 @@ function netlifyFunctionsDevPlugin(env: Record<string, string>): Plugin {
           }
 
           // Clear require cache so function edits hot-reload during local work.
-          const functionPath = require.resolve('./netlify/functions/submit-contractor-quiz.js');
+          const functionPath = require.resolve('./netlify/functions/submit-contractor-quiz.cjs');
           delete require.cache[functionPath];
-          const { handler } = require('./netlify/functions/submit-contractor-quiz.js') as {
+          const { handler } = require('./netlify/functions/submit-contractor-quiz.cjs') as {
             handler: (event: {
               httpMethod: string;
               body: string;

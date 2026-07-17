@@ -1,4 +1,4 @@
-// netlify/functions/contact-form.js
+// netlify/functions/contact-form.cjs
 // This function is no longer needed with Netlify Forms
 // Netlify Forms handles form submissions automatically
 exports.handler = async (event) => {

@@ -1,4 +1,5 @@
-// netlify/functions/submit-contractor-quiz.js
+// netlify/functions/submit-contractor-quiz.cjs
+// Uses .cjs because package.json has "type": "module".
 const GHL_API_BASE = 'https://services.leadconnectorhq.com';
 const GHL_API_VERSION = '2021-07-28';
 
