@@ -166,11 +166,13 @@ function FeatureCard({
 function CtaButton({
   children,
   onClick,
+  href,
   variant = 'primary',
   className = '',
 }: {
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
+  href?: string;
   variant?: 'primary' | 'secondary';
   className?: string;
 }) {
@@ -180,6 +182,19 @@ function CtaButton({
     variant === 'primary'
       ? 'bg-[#fbba2f] text-[#0A2540] shadow-md hover:brightness-105 focus-visible:ring-[#fbba2f]'
       : 'border border-neutral-300 bg-white text-[#0A2540] hover:border-[#fbba2f] hover:bg-[#fbba2f]/10 focus-visible:ring-[#fbba2f]';
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${base} ${styles} ${className}`}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
     <button type="button" onClick={onClick} className={`${base} ${styles} ${className}`}>
@@ -262,17 +277,10 @@ function VslVideoPlayer({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || unlocked) return;
 
-    if (!unlocked) {
-      video.pause();
-      video.currentTime = 0;
-      return;
-    }
-
-    void video.play().catch(() => {
-      // Autoplay may be blocked until the user taps play.
-    });
+    video.pause();
+    video.currentTime = 0;
   }, [unlocked]);
 
   useEffect(() => {
@@ -499,7 +507,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
         </section>
 
         <div className="mt-10 flex justify-center sm:mt-12">
-          <CtaButton onClick={openAssessment} className="w-full max-w-md sm:w-auto">
+          <CtaButton href={bookingWidgetBase} className="w-full max-w-md sm:w-auto">
             Book Your Free Strategy Call
           </CtaButton>
         </div>
@@ -534,7 +542,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             Results vary by company, market, offer, and lead volume. No specific results are guaranteed.
           </p>
           <div className="mt-6 flex justify-center">
-            <CtaButton onClick={openAssessment}>See How It Works</CtaButton>
+            <CtaButton href={bookingWidgetBase}>See How It Works</CtaButton>
           </div>
         </section>
 
@@ -559,7 +567,7 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
             and book more work.
           </p>
           <div className="mt-7 flex justify-center">
-            <CtaButton onClick={openAssessment}>Book My Free Strategy Call</CtaButton>
+            <CtaButton href={bookingWidgetBase}>Book My Free Strategy Call</CtaButton>
           </div>
         </section>
 
