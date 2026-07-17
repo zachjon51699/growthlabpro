@@ -387,12 +387,9 @@ export default function ContractorOptinLandingPage({ onNavigateHome: _onNavigate
 
   const closeAssessment = useCallback(() => {
     setIsAssessmentOpen(false);
-    // After quiz completion, land on the on-page calendar.
-    if (readVideoUnlocked()) {
-      window.setTimeout(() => {
-        document.getElementById(BOOKING_SECTION_ID)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 50);
-    }
+    window.setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
   }, []);
 
   const handleQualified = useCallback(() => {

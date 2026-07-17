@@ -315,7 +315,7 @@ export default function QualificationAssessmentModal({
                 You&apos;re in!
               </p>
               <p className="mt-2 text-base leading-relaxed text-neutral-600 sm:text-lg">
-                The demo is ready to watch, and you can book your free strategy call below.
+                The demo is ready to watch. You can book a free strategy call anytime below.
               </p>
             </div>
           ) : isSubmitting ? (
@@ -432,7 +432,7 @@ export default function QualificationAssessmentModal({
               className="rounded-xl px-5 py-2.5 text-sm font-bold shadow-md transition hover:brightness-105 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:px-6 sm:text-base"
               style={{ backgroundColor: GOLD, color: NAVY, ['--tw-ring-color' as string]: GOLD }}
             >
-              View Calendar
+              Continue
             </button>
           ) : submitError ? (
             <button
